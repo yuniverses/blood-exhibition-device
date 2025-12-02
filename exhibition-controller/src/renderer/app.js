@@ -10,9 +10,13 @@ class ExhibitionController {
   }
 
   async init() {
-    // 載入配置和狀態
+    // 載入配置和狀態（順序很重要！）
     await this.loadConfig();
     await this.loadDisplays();
+
+    // 在顯示器資料載入後才渲染裝置
+    this.renderDevices();
+
     await this.refreshStatus();
 
     // 設定事件監聽
@@ -28,7 +32,7 @@ class ExhibitionController {
   async loadConfig() {
     try {
       this.config = await window.api.getConfig();
-      this.renderDevices();
+      // 移除這裡的 renderDevices()，改在 init() 中呼叫
     } catch (error) {
       this.log('系統', `載入配置失敗: ${error.message}`, 'stderr');
     }
