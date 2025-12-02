@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C區 - 影片播放系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: #000;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* 待機狀態 */
+        .idle-state {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 10;
+        }
+
+        .idle-state.hidden {
+            display: none;
+        }
+
+        .idle-title {
+            font-size: 4em;
+            color: white;
+            margin-bottom: 30px;
+            font-weight: 300;
+            animation: fadeInOut 3s ease-in-out infinite;
+        }
+
+        .scan-prompt {
+            font-size: 2em;
+            color: #fbbf24;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* 影片播放狀態 */
+        .video-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .video-container.active {
+            display: flex;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* 用戶資訊疊加 */
+        .user-overlay {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px 40px;
+            border-radius: 15px;
+            color: white;
+            z-index: 21;
+            display: none;
+        }
+
+        .user-overlay.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .user-name {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .user-blood-type {
+            font-size: 1.8em;
+            color: #fca5a5;
+        }
+
+        /* 測試控制 */
+        .test-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        .test-btn {
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s;
+        }
+
+        .test-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        /* QR輸入面板 */
+        .qr-input-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .qr-input-panel.active {
+            display: block;
+        }
+
+        .qr-input-panel input {
+            padding: 15px;
+            font-size: 1.2em;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        .qr-input-panel button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- 待機狀態 -->
+    <div class="idle-state" id="idleState">
+        <h1 class="idle-title">C區影片體驗</h1>
+        <p class="scan-prompt">請掃描您的 QR Code</p>
+    </div>
+
+    <!-- 影片播放 -->
+    <div class="video-container" id="videoContainer">
+        <video id="mainVideo" autoplay muted></video>
+        <div class="user-overlay" id="userOverlay">
+            <div class="user-name" id="userName">王小明</div>
+            <div class="user-blood-type" id="userBloodType">A+</div>
+        </div>
+    </div>
+
+    <!-- 測試控制 -->
+    <div class="test-controls">
+        <button class="test-btn" onclick="toggleQRInput()">手動輸入 QR Code</button>
+        <button class="test-btn" onclick="resetToIdle()">返回待機</button>
+    </div>
+
+    <!-- QR輸入面板 -->
+    <div class="qr-input-panel" id="qrInputPanel">
+        <input type="text" id="qrCodeInput" placeholder="輸入用戶 UUID">
+        <button onclick="submitQRCode()">送出</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const idleState = document.getElementById('idleState');
+        const videoContainer = document.getElementById('videoContainer');
+        const mainVideo = document.getElementById('mainVideo');
+        const userOverlay = document.getElementById('userOverlay');
+        const qrInputPanel = document.getElementById('qrInputPanel');
+
+        let currentState = 'idle';
+
+        // 切換到待機狀態
+        function resetToIdle() {
+            currentState = 'idle';
+            idleState.classList.remove('hidden');
+            videoContainer.classList.remove('active');
+            userOverlay.classList.remove('active');
+            mainVideo.pause();
+            mainVideo.currentTime = 0;
+        }
+
+        // 播放影片
+        function playVideo(userData) {
+            currentState = 'playing';
+
+            // 更新用戶資訊
+            document.getElementById('userName').textContent = userData.username;
+            document.getElementById('userBloodType').textContent = userData.bloodType;
+
+            // 切換狀態
+            idleState.classList.add('hidden');
+            videoContainer.classList.add('active');
+            userOverlay.classList.add('active');
+
+            // 播放影片（這裡可以根據血型或其他條件選擇不同影片）
+            mainVideo.src = '/videos/c_video.mp4';
+            mainVideo.play();
+
+            // 影片播放結束後返回待機
+            mainVideo.onended = () => {
+                setTimeout(resetToIdle, 2000);
+            };
+
+            // 5秒後隱藏用戶資訊疊加
+            setTimeout(() => {
+                userOverlay.classList.remove('active');
+            }, 5000);
+        }
+
+        // 處理 QR Code 掃描
+        async function handleQRScan(qrCode) {
+            try {
+                const response = await fetch('/api/scan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ qrCode: qrCode })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    playVideo(data.data.user);
+                } else {
+                    alert('掃描失敗: ' + data.error);
+                }
+            } catch (error) {
+                console.error('掃描處理失敗:', error);
+                alert('掃描處理失敗');
+            }
+        }
+
+        // Socket.IO 事件監聽
+        socket.on('playVideo', (data) => {
+            if (data.success && currentState === 'idle') {
+                playVideo(data.userData);
+            }
+        });
+
+        // 測試功能
+        function toggleQRInput() {
+            qrInputPanel.classList.toggle('active');
+        }
+
+        function submitQRCode() {
+            const qrCode = document.getElementById('qrCodeInput').value.trim();
+            if (qrCode) {
+                handleQRScan(qrCode);
+                document.getElementById('qrCodeInput').value = '';
+                qrInputPanel.classList.remove('active');
+            }
+        }
+
+        // 監聽鍵盤輸入（QR掃描器）
+        let qrBuffer = '';
+        let qrTimeout = null;
+
+        document.addEventListener('keypress', (e) => {
+            if (qrTimeout) {
+                clearTimeout(qrTimeout);
+            }
+
+            if (e.key === 'Enter') {
+                if (qrBuffer.length > 0 && currentState === 'idle') {
+                    handleQRScan(qrBuffer);
+                    qrBuffer = '';
+                }
+            } else {
+                qrBuffer += e.key;
+                qrTimeout = setTimeout(() => {
+                    qrBuffer = '';
+                }, 1000);
+            }
+        });
+
+        console.log('C區影片系統已啟動');
+    </script>
+</body>
+</html>

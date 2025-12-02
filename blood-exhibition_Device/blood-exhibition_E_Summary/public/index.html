@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E區 - 體驗總結與貼紙列印</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 待機狀態 */
+        .idle-state {
+            text-align: center;
+            color: white;
+            display: block;
+        }
+
+        .idle-state.hidden {
+            display: none;
+        }
+
+        .idle-title {
+            font-size: 4em;
+            margin-bottom: 30px;
+            font-weight: 300;
+            animation: fadeInOut 3s ease-in-out infinite;
+        }
+
+        .scan-prompt {
+            font-size: 2em;
+            color: #fbbf24;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* 貼紙容器 */
+        .sticker-container {
+            background: white;
+            border-radius: 30px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 90%;
+            display: none;
+        }
+
+        .sticker-container.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .sticker-header {
+            text-align: center;
+            border-bottom: 3px solid #f5576c;
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+
+        .sticker-title {
+            font-size: 3em;
+            color: #f5576c;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .sticker-subtitle {
+            font-size: 1.5em;
+            color: #666;
+        }
+
+        .sticker-body {
+            margin-bottom: 40px;
+        }
+
+        .info-section {
+            margin-bottom: 35px;
+        }
+
+        .info-label {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 2.5em;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .badge.hero {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #f5576c;
+        }
+
+        .stat-label {
+            font-size: 1.2em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .qr-code-section {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .qr-code-section img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        .qr-label {
+            font-size: 1.2em;
+            color: #666;
+            margin-top: 15px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 20px 50px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-print {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-print:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        /* 已列印提示 */
+        .already-printed {
+            text-align: center;
+            padding: 40px;
+            background: #f0fdf4;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 3px solid #10b981;
+        }
+
+        .printed-badge {
+            font-size: 3em;
+            font-weight: bold;
+            color: #10b981;
+            margin-bottom: 20px;
+        }
+
+        .printed-message {
+            font-size: 1.5em;
+            color: #059669;
+        }
+
+        /* 測試控制 */
+        .test-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .test-btn {
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            display: block;
+            width: 100%;
+        }
+
+        /* QR輸入面板 */
+        .qr-input-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .qr-input-panel.active {
+            display: block;
+        }
+
+        .qr-input-panel input {
+            padding: 15px;
+            font-size: 1.2em;
+            border: 2px solid #f5576c;
+            border-radius: 10px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        .qr-input-panel button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background: #f5576c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* 列印樣式 */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .idle-state,
+            .test-controls,
+            .qr-input-panel,
+            .actions,
+            .already-printed {
+                display: none !important;
+            }
+
+            .sticker-container {
+                box-shadow: none;
+                padding: 40px;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 待機狀態 -->
+    <div class="idle-state" id="idleState">
+        <h1 class="idle-title">感謝您的參與！</h1>
+        <p class="scan-prompt">掃描您的 QR Code 查看體驗總結</p>
+    </div>
+
+    <!-- 貼紙 -->
+    <div class="sticker-container" id="stickerContainer">
+        <div class="sticker-header">
+            <h1 class="sticker-title">血型展覽體驗證書</h1>
+            <p class="sticker-subtitle">感謝您的熱心參與</p>
+        </div>
+
+        <div class="sticker-body">
+            <!-- 基本資訊 -->
+            <div class="info-section">
+                <div class="info-label">參與者</div>
+                <div class="info-value" id="userName">王小明</div>
+                <span class="badge" id="bloodType">A+</span>
+            </div>
+
+            <!-- 英雄徽章 -->
+            <div class="info-section" id="heroSection" style="display: none;">
+                <span class="badge hero">🏆 生命救援英雄</span>
+                <div class="info-label" style="margin-top: 15px;">您在緊急任務中成功拯救了生命！</div>
+            </div>
+
+            <!-- 統計資訊 -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="experienceDuration">0</div>
+                    <div class="stat-label">體驗時長 (分鐘)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalInteractions">0</div>
+                    <div class="stat-label">互動次數</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="visitedDevices">0</div>
+                    <div class="stat-label">體驗區域</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="entryTime">--</div>
+                    <div class="stat-label">參與時間</div>
+                </div>
+            </div>
+
+            <!-- QR Code -->
+            <div class="qr-code-section">
+                <img id="qrCodeImage" src="" alt="QR Code">
+                <div class="qr-label">您的專屬 QR Code</div>
+            </div>
+        </div>
+
+        <!-- 已列印提示 -->
+        <div class="already-printed" id="alreadyPrinted" style="display: none;">
+            <div class="printed-badge">✓ 已領取貼紙</div>
+            <p class="printed-message">您已經列印過體驗證書囉！</p>
+        </div>
+
+        <!-- 操作按鈕 -->
+        <div class="actions">
+            <button class="btn btn-print" id="printButton" onclick="window.print()">列印貼紙</button>
+            <button class="btn btn-back" onclick="resetToIdle()">返回</button>
+        </div>
+    </div>
+
+    <!-- 測試控制 -->
+    <div class="test-controls">
+        <button class="test-btn" onclick="toggleQRInput()">手動輸入 QR Code</button>
+    </div>
+
+    <!-- QR輸入面板 -->
+    <div class="qr-input-panel" id="qrInputPanel">
+        <input type="text" id="qrCodeInput" placeholder="輸入用戶 UUID">
+        <button onclick="submitQRCode()">送出</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const idleState = document.getElementById('idleState');
+        const stickerContainer = document.getElementById('stickerContainer');
+        const qrInputPanel = document.getElementById('qrInputPanel');
+
+        // 顯示總結
+        function showSummary(summary, qrCode, hasPrinted = false) {
+            // 更新基本資訊
+            document.getElementById('userName').textContent = summary.username;
+            document.getElementById('bloodType').textContent = summary.bloodType;
+
+            // 更新統計
+            document.getElementById('experienceDuration').textContent = summary.experienceDuration || 0;
+            document.getElementById('totalInteractions').textContent = summary.totalInteractions || 0;
+            document.getElementById('visitedDevices').textContent = summary.visitedDevices || 0;
+
+            // 格式化時間
+            const entryDate = new Date(summary.entryTime);
+            const displayTime = entryDate.toLocaleDateString('zh-TW', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }) + ' ' + entryDate.toLocaleTimeString('zh-TW', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+            document.getElementById('entryTime').textContent = displayTime;
+
+            // 顯示英雄徽章
+            const heroSection = document.getElementById('heroSection');
+            if (summary.savedLife) {
+                heroSection.style.display = 'block';
+            } else {
+                heroSection.style.display = 'none';
+            }
+
+            // 更新 QR Code
+            document.getElementById('qrCodeImage').src = qrCode;
+
+            // 根據是否已列印顯示不同內容
+            const alreadyPrinted = document.getElementById('alreadyPrinted');
+            const printButton = document.getElementById('printButton');
+
+            if (hasPrinted) {
+                // 已列印：顯示提示，隱藏列印按鈕
+                alreadyPrinted.style.display = 'block';
+                printButton.style.display = 'none';
+            } else {
+                // 未列印：隱藏提示，顯示列印按鈕
+                alreadyPrinted.style.display = 'none';
+                printButton.style.display = 'inline-block';
+            }
+
+            // 切換顯示
+            idleState.classList.add('hidden');
+            stickerContainer.classList.add('active');
+        }
+
+        // 返回待機
+        function resetToIdle() {
+            idleState.classList.remove('hidden');
+            stickerContainer.classList.remove('active');
+        }
+
+        // 處理 QR Code 掃描
+        async function handleQRScan(qrCode) {
+            try {
+                const response = await fetch('/api/scan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ qrCode: qrCode })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showSummary(data.data.summary, data.data.qrCode, data.data.hasPrinted);
+                } else {
+                    alert('掃描失敗: ' + data.error);
+                }
+            } catch (error) {
+                console.error('掃描處理失敗:', error);
+                alert('掃描處理失敗');
+            }
+        }
+
+        // Socket.IO 事件監聽
+        socket.on('showSummary', (data) => {
+            if (data.success) {
+                showSummary(data.summary, data.qrCode, data.hasPrinted);
+            }
+        });
+
+        // 測試功能
+        function toggleQRInput() {
+            qrInputPanel.classList.toggle('active');
+        }
+
+        function submitQRCode() {
+            const qrCode = document.getElementById('qrCodeInput').value.trim();
+            if (qrCode) {
+                handleQRScan(qrCode);
+                document.getElementById('qrCodeInput').value = '';
+                qrInputPanel.classList.remove('active');
+            }
+        }
+
+        // 監聽鍵盤輸入（QR掃描器）
+        let qrBuffer = '';
+        let qrTimeout = null;
+
+        document.addEventListener('keypress', (e) => {
+            if (qrTimeout) {
+                clearTimeout(qrTimeout);
+            }
+
+            if (e.key === 'Enter') {
+                if (qrBuffer.length > 0) {
+                    handleQRScan(qrBuffer);
+                    qrBuffer = '';
+                }
+            } else {
+                qrBuffer += e.key;
+                qrTimeout = setTimeout(() => {
+                    qrBuffer = '';
+                }, 1000);
+            }
+        });
+
+        console.log('E區體驗總結系統已啟動');
+    </script>
+</body>
+</html>

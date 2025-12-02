@@ -108,19 +108,19 @@
       "path": "../blood-exhibition_Device/blood-exhibition_C_Video",
       "command": "npm",
       "args": ["start"],
-      "port": 8080,
+      "port": 8082,
       "healthCheck": "/",
       "screens": [
         {
           "id": "video-main",
           "name": "影片主畫面",
           "url": "/",
-          "description": "影片播放介面",
+          "description": "QR Code掃描觸發影片播放",
           "defaultDisplay": 0
         }
       ],
-      "enabled": false,
-      "description": "C區影片播放系統（尚未實作）"
+      "enabled": true,
+      "description": "C區影片播放系統 - QR Code掃描觸發影片播放與互動記錄"
     },
     {
       "id": "video-device-d",
@@ -130,19 +130,41 @@
       "path": "../blood-exhibition_Device/blood-exhibition_D_Video",
       "command": "npm",
       "args": ["start"],
-      "port": 8080,
+      "port": 8083,
       "healthCheck": "/",
       "screens": [
         {
           "id": "video-main",
           "name": "影片主畫面",
           "url": "/",
-          "description": "影片播放介面",
+          "description": "QR Code掃描觸發影片播放",
           "defaultDisplay": 0
         }
       ],
-      "enabled": false,
-      "description": "D區影片播放系統（尚未實作）"
+      "enabled": true,
+      "description": "D區影片播放系統 - QR Code掃描觸發影片播放與互動記錄"
+    },
+    {
+      "id": "summary-device",
+      "name": "E. 體驗總結系統",
+      "type": "device",
+      "host": "local",
+      "path": "../blood-exhibition_Device/blood-exhibition_E_Summary",
+      "command": "npm",
+      "args": ["start"],
+      "port": 8084,
+      "healthCheck": "/",
+      "screens": [
+        {
+          "id": "summary-main",
+          "name": "總結主畫面",
+          "url": "/",
+          "description": "體驗總結與貼紙列印介面",
+          "defaultDisplay": 0
+        }
+      ],
+      "enabled": true,
+      "description": "E區體驗總結系統 - 互動資料分析、體驗證書生成與列印"
     }
   ],
   "displays": {
