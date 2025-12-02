@@ -86,7 +86,7 @@
       "path": "../blood-exhibition_Device/blood-exhibition_B_Mission",
       "command": "npm",
       "args": ["start"],
-      "port": 8080,
+      "port": 8081,
       "healthCheck": "/",
       "screens": [
         {
@@ -97,8 +97,8 @@
           "defaultDisplay": 0
         }
       ],
-      "enabled": false,
-      "description": "訪客互動任務系統（尚未實作）"
+      "enabled": true,
+      "description": "捐血緊急任務互動系統 - QR Code 掃描、血型匹配、任務挑戰"
     },
     {
       "id": "video-device-c",

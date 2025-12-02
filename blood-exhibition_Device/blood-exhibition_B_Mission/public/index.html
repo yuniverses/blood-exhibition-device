@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B區 - 捐血緊急任務系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: #000;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* 影片容器 */
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 預設狀態 */
+        .idle-state {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            background: linear-gradient(45deg, #dc2626, #ef4444);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .idle-state.hidden {
+            display: none;
+        }
+
+        .idle-title {
+            font-size: 5em;
+            color: white;
+            font-weight: 300;
+            letter-spacing: 8px;
+            animation: fadeInOut 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* 緊急任務狀態 */
+        .mission-state {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: none;
+        }
+
+        .mission-state.active {
+            display: block;
+        }
+
+        /* 文字疊加層 */
+        .text-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 11;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%);
+        }
+
+        .mission-alert {
+            background: rgba(220, 38, 38, 0.95);
+            color: white;
+            padding: 30px 60px;
+            border-radius: 20px;
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 40px;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 10px 50px rgba(220, 38, 38, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .mission-content {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 60px;
+            border-radius: 30px;
+            max-width: 1200px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .mission-title {
+            font-size: 4em;
+            color: #fff;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .mission-description {
+            font-size: 2.5em;
+            color: #fff;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .patient-info {
+            font-size: 2.8em;
+            color: #fca5a5;
+            margin-bottom: 30px;
+        }
+
+        .blood-type-needed {
+            display: inline-block;
+            background: white;
+            color: #dc2626;
+            padding: 30px 80px;
+            border-radius: 50px;
+            font-size: 5em;
+            font-weight: bold;
+            margin: 30px 0;
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3);
+        }
+
+        .scan-instruction {
+            font-size: 2.5em;
+            color: #fbbf24;
+            margin-top: 40px;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .countdown {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 50%;
+            font-size: 3em;
+            font-weight: bold;
+            min-width: 120px;
+            min-height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 30px rgba(239, 68, 68, 0.5);
+        }
+
+        /* 結果狀態 */
+        .result-state {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            display: none;
+        }
+
+        .result-state.active {
+            display: block;
+        }
+
+        .result-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 21;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px;
+        }
+
+        .result-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+        }
+
+        .result-failed {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95));
+        }
+
+        .result-icon {
+            font-size: 10em;
+            margin-bottom: 40px;
+            animation: bounceIn 0.8s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .result-title {
+            font-size: 5em;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .result-message {
+            font-size: 3em;
+            color: white;
+            text-align: center;
+            line-height: 1.6;
+            max-width: 1000px;
+        }
+
+        .donor-name {
+            font-size: 4em;
+            color: #fef3c7;
+            font-weight: bold;
+            margin: 30px 0;
+        }
+
+        /* 測試按鈕 */
+        .test-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        .test-btn {
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .test-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* QR Code 輸入區 */
+        .qr-input-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .qr-input-panel.active {
+            display: block;
+        }
+
+        .qr-input-panel input {
+            padding: 15px;
+            font-size: 1.2em;
+            border: 2px solid #dc2626;
+            border-radius: 10px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        .qr-input-panel button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .qr-input-panel button:hover {
+            background: #ef4444;
+        }
+
+        /* 隱藏類 */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 預設狀態 -->
+    <div class="idle-state" id="idleState">
+        <h1 class="idle-title">捐血救人</h1>
+    </div>
+
+    <!-- 緊急任務狀態 -->
+    <div class="mission-state" id="missionState">
+        <div class="video-container">
+            <video id="missionVideo" muted></video>
+        </div>
+        <div class="text-overlay">
+            <div class="countdown" id="countdown">30</div>
+            <div class="mission-alert">🚨 緊急任務 🚨</div>
+            <div class="mission-content">
+                <h2 class="mission-title" id="missionTitle">車禍急救</h2>
+                <p class="mission-description" id="missionDescription">
+                    一名機車騎士在市區發生車禍，傷勢嚴重，急需大量輸血！
+                </p>
+                <p class="patient-info">
+                    患者：<span id="patientName">王先生</span>
+                </p>
+                <div class="blood-type-needed" id="bloodTypeNeeded">A+</div>
+                <p class="scan-instruction">
+                    ⬇️ 請掃描您的 QR Code 參與救援 ⬇️
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 結果狀態 -->
+    <div class="result-state" id="resultState">
+        <div class="video-container">
+            <video id="resultVideo" muted></video>
+        </div>
+        <div class="result-overlay" id="resultOverlay">
+            <div class="result-icon" id="resultIcon">✓</div>
+            <h2 class="result-title" id="resultTitle">血型符合！</h2>
+            <div class="donor-name">謝謝 <span id="donorName">王小明</span> 來捐血！</div>
+            <p class="result-message" id="resultMessage">
+                您的血液將拯救生命，謝謝您的無私奉獻！
+            </p>
+        </div>
+    </div>
+
+    <!-- 測試控制面板 -->
+    <div class="test-controls">
+        <button class="test-btn" onclick="triggerMission()">觸發任務 (測試)</button>
+        <button class="test-btn" onclick="toggleQRInput()">手動輸入 QR Code</button>
+        <button class="test-btn" onclick="resetToIdle()">返回預設狀態</button>
+    </div>
+
+    <!-- QR Code 輸入面板 -->
+    <div class="qr-input-panel" id="qrInputPanel">
+        <input type="text" id="qrCodeInput" placeholder="輸入用戶 UUID">
+        <button onclick="submitQRCode()">送出</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // 狀態管理
+        const State = {
+            IDLE: 'idle',
+            MISSION: 'mission',
+            RESULT: 'result'
+        };
+
+        let currentState = State.IDLE;
+        let currentMission = null;
+        let countdownTimer = null;
+        let countdownValue = 30;
+
+        // DOM 元素
+        const idleState = document.getElementById('idleState');
+        const missionState = document.getElementById('missionState');
+        const resultState = document.getElementById('resultState');
+        const missionVideo = document.getElementById('missionVideo');
+        const resultVideo = document.getElementById('resultVideo');
+        const qrInputPanel = document.getElementById('qrInputPanel');
+
+        // 切換狀態
+        function switchState(newState) {
+            console.log('切換狀態:', currentState, '->', newState);
+            currentState = newState;
+
+            idleState.classList.toggle('hidden', newState !== State.IDLE);
+            missionState.classList.toggle('active', newState === State.MISSION);
+            resultState.classList.toggle('active', newState === State.RESULT);
+
+            if (newState === State.IDLE) {
+                stopCountdown();
+                qrInputPanel.classList.remove('active');
+            }
+        }
+
+        // 觸發緊急任務
+        async function triggerMission() {
+            try {
+                const response = await fetch('/api/mission/random');
+                const data = await response.json();
+
+                if (data.success) {
+                    showMission(data.data);
+                }
+            } catch (error) {
+                console.error('觸發任務失敗:', error);
+            }
+        }
+
+        // 顯示任務
+        function showMission(mission) {
+            currentMission = mission;
+
+            document.getElementById('missionTitle').textContent = mission.title;
+            document.getElementById('missionDescription').textContent = mission.description;
+            document.getElementById('patientName').textContent = mission.patientName;
+            document.getElementById('bloodTypeNeeded').textContent = mission.requiredBloodType;
+
+            // 這裡應該載入對應的影片，但由於沒有實際影片檔案，我們先略過
+            // missionVideo.src = `/videos/${mission.videoFile}`;
+            // missionVideo.play();
+
+            switchState(State.MISSION);
+            startCountdown();
+        }
+
+        // 開始倒數計時
+        function startCountdown() {
+            countdownValue = 30;
+            updateCountdownDisplay();
+
+            countdownTimer = setInterval(() => {
+                countdownValue--;
+                updateCountdownDisplay();
+
+                if (countdownValue <= 0) {
+                    stopCountdown();
+                    resetToIdle();
+                }
+            }, 1000);
+        }
+
+        // 停止倒數計時
+        function stopCountdown() {
+            if (countdownTimer) {
+                clearInterval(countdownTimer);
+                countdownTimer = null;
+            }
+        }
+
+        // 更新倒數顯示
+        function updateCountdownDisplay() {
+            document.getElementById('countdown').textContent = countdownValue;
+        }
+
+        // 處理 QR Code 掃描
+        async function handleQRScan(qrCode) {
+            if (!currentMission) {
+                console.error('沒有進行中的任務');
+                return;
+            }
+
+            stopCountdown();
+
+            try {
+                const response = await fetch('/api/scan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        qrCode: qrCode,
+                        missionId: currentMission.id
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showResult(data.data);
+                } else {
+                    alert('掃描失敗: ' + data.error);
+                    resetToIdle();
+                }
+            } catch (error) {
+                console.error('掃描處理失敗:', error);
+                alert('掃描處理失敗: ' + error.message);
+                resetToIdle();
+            }
+        }
+
+        // 顯示結果
+        function showResult(data) {
+            const resultOverlay = document.getElementById('resultOverlay');
+            const resultIcon = document.getElementById('resultIcon');
+            const resultTitle = document.getElementById('resultTitle');
+            const donorName = document.getElementById('donorName');
+            const resultMessage = document.getElementById('resultMessage');
+
+            if (data.isCompatible) {
+                // 血型符合
+                resultOverlay.className = 'result-overlay result-success';
+                resultIcon.textContent = '✓';
+                resultTitle.textContent = '血型符合！';
+                donorName.textContent = data.user.username;
+                resultMessage.textContent = `您的 ${data.user.bloodType} 血液將拯救 ${data.mission.patientName} 的生命，謝謝您的無私奉獻！`;
+
+                // 載入成功影片
+                // resultVideo.src = '/videos/success.mp4';
+            } else {
+                // 血型不合
+                resultOverlay.className = 'result-overlay result-failed';
+                resultIcon.textContent = '✗';
+                resultTitle.textContent = '血型不合';
+                donorName.textContent = data.user.username;
+                resultMessage.textContent = `感謝 ${data.user.username} 的熱心，但您的 ${data.user.bloodType} 血型無法用於這次救援。每一份愛心都很珍貴！`;
+
+                // 載入失敗影片
+                // resultVideo.src = '/videos/failed.mp4';
+            }
+
+            switchState(State.RESULT);
+            // resultVideo.play();
+
+            // 5秒後返回預設狀態
+            setTimeout(() => {
+                resetToIdle();
+            }, 8000);
+        }
+
+        // 返回預設狀態
+        function resetToIdle() {
+            switchState(State.IDLE);
+            currentMission = null;
+            countdownValue = 30;
+        }
+
+        // Socket.IO 事件監聽
+        socket.on('newMission', (mission) => {
+            showMission(mission);
+        });
+
+        socket.on('scanResult', (data) => {
+            if (data.success) {
+                showResult(data);
+            }
+        });
+
+        // 測試功能
+        function toggleQRInput() {
+            qrInputPanel.classList.toggle('active');
+        }
+
+        function submitQRCode() {
+            const qrCode = document.getElementById('qrCodeInput').value.trim();
+            if (qrCode) {
+                handleQRScan(qrCode);
+                document.getElementById('qrCodeInput').value = '';
+                qrInputPanel.classList.remove('active');
+            }
+        }
+
+        // 監聽鍵盤輸入（用於QR Code掃描器）
+        let qrBuffer = '';
+        let qrTimeout = null;
+
+        document.addEventListener('keypress', (e) => {
+            // 清除之前的超時
+            if (qrTimeout) {
+                clearTimeout(qrTimeout);
+            }
+
+            // Enter 鍵表示掃描完成
+            if (e.key === 'Enter') {
+                if (qrBuffer.length > 0 && currentState === State.MISSION) {
+                    handleQRScan(qrBuffer);
+                    qrBuffer = '';
+                }
+            } else {
+                // 累積掃描的字符
+                qrBuffer += e.key;
+
+                // 設置超時，如果1秒內沒有新字符，清空緩衝
+                qrTimeout = setTimeout(() => {
+                    qrBuffer = '';
+                }, 1000);
+            }
+        });
+
+        // 自動觸發任務（測試用）
+        // 可以設定隨機時間間隔觸發任務
+        function autoTriggerMission() {
+            const minInterval = 30000; // 30秒
+            const maxInterval = 120000; // 2分鐘
+            const interval = Math.random() * (maxInterval - minInterval) + minInterval;
+
+            setTimeout(() => {
+                if (currentState === State.IDLE && Math.random() > 0.7) {
+                    triggerMission();
+                }
+                autoTriggerMission();
+            }, interval);
+        }
+
+        // 啟動自動觸發（取消註解以啟用）
+        // autoTriggerMission();
+
+        // 初始化
+        console.log('B區捐血任務系統已啟動');
+    </script>
+</body>
+</html>
