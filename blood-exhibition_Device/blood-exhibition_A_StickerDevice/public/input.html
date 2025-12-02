@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>血型展覽 - 註冊</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.2em;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            transition: all 0.3s;
+            background: #f9f9f9;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #dc2626;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .blood-type-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .blood-type-btn {
+            padding: 20px;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+            color: #666;
+        }
+
+        .blood-type-btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .blood-type-btn.selected {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            color: white;
+            border-color: transparent;
+            transform: scale(1.05);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 25px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(220, 38, 38, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #dc2626;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: #4caf50;
+            color: white;
+            border-radius: 15px;
+            margin-top: 20px;
+            font-size: 1.3em;
+        }
+
+        .success-message.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sticker-preview {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .sticker-preview.active {
+            display: block;
+        }
+
+        .sticker-content {
+            text-align: center;
+        }
+
+        .sticker-name {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .sticker-blood-type {
+            display: inline-block;
+            padding: 10px 30px;
+            border: 3px solid #333;
+            color: #333;
+            border-radius: 50px;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: white;
+        }
+
+        .qr-code {
+            margin: 20px auto;
+        }
+
+        .qr-code img {
+            max-width: 250px;
+            height: auto;
+        }
+
+        .print-btn {
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .print-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 0;
+                background: white;
+            }
+
+            .sticker-preview {
+                box-shadow: none;
+                page-break-inside: avoid;
+                background: white;
+                color: black;
+            }
+
+            .sticker-name {
+                color: black !important;
+            }
+
+            .sticker-blood-type {
+                background: white !important;
+                color: black !important;
+                border: 2px solid black !important;
+            }
+
+            .print-btn, .submit-btn, form {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>血型探索之旅</h1>
+        <p class="subtitle">請輸入您的資訊，開始探索血型的奧秘</p>
+
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="username">您的姓名</label>
+                <input type="text" id="username" name="username" placeholder="請輸入您的姓名" required autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label>選擇您的血型</label>
+                <div class="blood-type-grid">
+                    <div class="blood-type-btn" data-blood-type="A+">A+</div>
+                    <div class="blood-type-btn" data-blood-type="A-">A-</div>
+                    <div class="blood-type-btn" data-blood-type="B+">B+</div>
+                    <div class="blood-type-btn" data-blood-type="B-">B-</div>
+                    <div class="blood-type-btn" data-blood-type="AB+">AB+</div>
+                    <div class="blood-type-btn" data-blood-type="AB-">AB-</div>
+                    <div class="blood-type-btn" data-blood-type="O+">O+</div>
+                    <div class="blood-type-btn" data-blood-type="O-">O-</div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" disabled>開始探索</button>
+        </form>
+
+        <div class="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 20px; color: #666;">正在生成您的專屬貼紙...</p>
+        </div>
+
+        <div class="success-message">
+            註冊成功！正在生成您的專屬貼紙...
+        </div>
+
+        <div class="sticker-preview">
+            <div class="sticker-content">
+                <div class="sticker-name" id="stickerName"></div>
+                <div class="sticker-blood-type" id="stickerBloodType"></div>
+                <div class="qr-code" id="qrCode"></div>
+                <button class="print-btn" onclick="window.print()">列印貼紙</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let selectedBloodType = null;
+
+        const bloodTypeButtons = document.querySelectorAll('.blood-type-btn');
+        bloodTypeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                bloodTypeButtons.forEach(btn => btn.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedBloodType = this.dataset.bloodType;
+                checkFormValid();
+            });
+        });
+
+        const usernameInput = document.getElementById('username');
+        usernameInput.addEventListener('input', checkFormValid);
+
+        function checkFormValid() {
+            const submitBtn = document.querySelector('.submit-btn');
+            if (usernameInput.value.trim() && selectedBloodType) {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
+
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const username = usernameInput.value.trim();
+            if (!username || !selectedBloodType) {
+                alert('請填寫姓名並選擇血型');
+                return;
+            }
+
+            const formElement = document.getElementById('registrationForm');
+            const loading = document.querySelector('.loading');
+            const successMessage = document.querySelector('.success-message');
+
+            formElement.style.display = 'none';
+            loading.classList.add('active');
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        bloodType: selectedBloodType
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    loading.classList.remove('active');
+                    successMessage.classList.add('active');
+
+                    setTimeout(() => {
+                        successMessage.classList.remove('active');
+                        showStickerPreview(data.data);
+                    }, 2000);
+                } else {
+                    throw new Error(data.error || '註冊失敗');
+                }
+            } catch (error) {
+                loading.classList.remove('active');
+                formElement.style.display = 'block';
+                alert('註冊失敗: ' + error.message);
+            }
+        });
+
+        function showStickerPreview(userData) {
+            const stickerPreview = document.querySelector('.sticker-preview');
+            const stickerName = document.getElementById('stickerName');
+            const stickerBloodType = document.getElementById('stickerBloodType');
+            const qrCode = document.getElementById('qrCode');
+
+            stickerName.textContent = userData.username;
+            stickerBloodType.textContent = userData.bloodType;
+            qrCode.innerHTML = `<img src="${userData.qrCode}" alt="QR Code">`;
+
+            stickerPreview.classList.add('active');
+
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    resetForm();
+                }, 3000);
+            }, 1000);
+        }
+
+        function resetForm() {
+            document.getElementById('registrationForm').style.display = 'block';
+            document.getElementById('username').value = '';
+            selectedBloodType = null;
+            bloodTypeButtons.forEach(btn => btn.classList.remove('selected'));
+            document.querySelector('.submit-btn').disabled = true;
+            document.querySelector('.sticker-preview').classList.remove('active');
+        }
+    </script>
+</body>
+</html>

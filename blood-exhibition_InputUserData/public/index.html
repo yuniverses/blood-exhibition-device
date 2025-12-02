@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exhibition API 監控中心 - 開發者文檔</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+    />
+    <style>
+      :root {
+        --primary: #6b7280;
+        --success: #10b981;
+        --error: #ef4444;
+        --warning: #f59e0b;
+        --bg: #000000;
+        --bg-secondary: #1a1a1a;
+        --text: #f3f4f6;
+        --text-secondary: #9ca3af;
+        --border: #374151;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        background: var(--bg-secondary);
+        border-bottom: 1px solid var(--border);
+        padding: 30px 0;
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.05);
+      }
+
+      .card h2 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+        color: var(--text);
+      }
+
+      .status-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .status-item {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        animation: pulse 2s infinite;
+      }
+
+      .status-indicator.success {
+        background: var(--success);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+      }
+
+      .status-indicator.error {
+        background: var(--error);
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+      }
+
+      .status-indicator.loading {
+        background: var(--warning);
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+
+      .method-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-right: 8px;
+      }
+
+      .method-get {
+        background: #10b981;
+      }
+      .method-post {
+        background: #3b82f6;
+      }
+      .method-put {
+        background: #f59e0b;
+      }
+      .method-patch {
+        background: #8b5cf6;
+      }
+      .method-delete {
+        background: #ef4444;
+      }
+
+      .json-viewer {
+        background: #1a1a1a;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 20px;
+        overflow-x: auto;
+        font-family: "Monaco", "Courier New", monospace;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .tab {
+        padding: 10px 20px;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 1rem;
+        transition: color 0.2s, border-color 0.2s;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+      }
+
+      .tab.active {
+        color: var(--text);
+        border-bottom-color: var(--text);
+      }
+
+      .tab:hover {
+        color: var(--text);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .code-example {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .copy-btn {
+        background: var(--border);
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: background 0.2s;
+        float: right;
+        margin-top: -5px;
+      }
+
+      .copy-btn:hover {
+        background: #4b5563;
+      }
+
+      .copy-btn.copied {
+        background: var(--success);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+      }
+
+      .stat-item {
+        background: var(--bg-secondary);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--text);
+      }
+
+      .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-top: 5px;
+      }
+
+      .refresh-btn {
+        background: var(--border);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .refresh-btn:hover {
+        background: #4b5563;
+      }
+
+      .refresh-btn:disabled {
+        background: var(--border);
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 1.8rem;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .status-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>Exhibition API 監控中心</h1>
+        <p class="subtitle">本地端展覽資料庫 API - 開發者文檔與系統狀態</p>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- 系統狀態概覽 -->
+      <div class="card">
+        <h2>🔍 系統狀態概覽</h2>
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-item">
+            <div class="stat-value" id="totalUsers">-</div>
+            <div class="stat-label">總用戶數</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="totalInteractions">-</div>
+            <div class="stat-label">總互動次數</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="avgInteractions">-</div>
+            <div class="stat-label">平均互動次數</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="apiStatus">-</div>
+            <div class="stat-label">API 狀態</div>
+          </div>
+        </div>
+        <button class="refresh-btn" onclick="refreshAll()">
+          <span>🔄</span> 重新整理狀態
+        </button>
+      </div>
+
+      <!-- API 端點狀態 -->
+      <div class="card">
+        <h2>📡 API 端點狀態</h2>
+        <div class="status-grid" id="apiStatusGrid">
+          <!-- 動態生成 -->
+        </div>
+      </div>
+
+      <!-- 資料結構 -->
+      <div class="card">
+        <h2>📊 資料結構</h2>
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab('schema')">
+            Schema 結構
+          </button>
+          <button class="tab" onclick="switchTab('sample')">範例資料</button>
+          <button class="tab" onclick="switchTab('current')">目前資料</button>
+        </div>
+
+        <div class="tab-content active" id="schema-tab">
+          <div class="json-viewer">
+            <pre><code class="language-json" id="schemaDisplay">{
+  "uuid": "string (UUID v4) - 唯一識別碼",
+  "bloodType": "string - 血型 (A/B/AB/O with +/-)",
+  "username": "string - 使用者名稱",
+  "entryTime": "ISO 8601 - 入場時間",
+  "interactions": [
+    {
+      "deviceId": "string - 裝置ID",
+      "deviceName": "string - 裝置名稱",
+      "actionType": "string - 動作類型",
+      "data": "object - 自訂資料",
+      "timestamp": "ISO 8601 - 互動時間"
+    }
+  ],
+  "lastUpdated": "ISO 8601 - 最後更新時間",
+  "...": "支援動態擴充任意欄位"
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="sample-tab">
+          <div class="json-viewer">
+            <pre><code class="language-json" id="sampleData">{
+  "uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "bloodType": "A+",
+  "username": "張小明",
+  "entryTime": "2024-01-01T10:00:00.000Z",
+  "interactions": [
+    {
+      "deviceId": "DEVICE001",
+      "deviceName": "互動螢幕 A",
+      "actionType": "scan",
+      "data": {
+        "content": "觀看展覽介紹",
+        "duration": 120
+      },
+      "timestamp": "2024-01-01T10:15:00.000Z"
+    }
+  ],
+  "department": "工程部",
+  "customField": "自訂資料"
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="current-tab">
+          <div class="json-viewer">
+            <pre><code class="language-json" id="currentData">載入中...</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- API 使用文檔 -->
+      <div class="card">
+        <h2>📖 API 使用文檔</h2>
+        <div class="tabs">
+          <button class="tab active" onclick="switchDocTab('javascript')">
+            JavaScript
+          </button>
+          <button class="tab" onclick="switchDocTab('python')">Python</button>
+          <button class="tab" onclick="switchDocTab('curl')">cURL</button>
+          <button class="tab" onclick="switchDocTab('qrcode')">
+            QR Code 整合
+          </button>
+        </div>
+
+        <div class="tab-content active" id="javascript-doc">
+          <h3>JavaScript / Node.js 範例</h3>
+
+          <div class="code-example">
+            <button class="copy-btn" onclick="copyCode('js-create')">
+              複製
+            </button>
+            <pre><code class="language-javascript" id="js-create">// 新增用戶
+const createUser = async () => {
+    const response = await fetch('http://localhost:3000/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            bloodType: 'A+',
+            username: '測試用戶',
+            department: '研發部'
+        })
+    });
+    const data = await response.json();
+    console.log('新用戶 UUID:', data.data.uuid);
+    return data.data;
+};</code></pre>
+          </div>
+
+          <div class="code-example">
+            <button class="copy-btn" onclick="copyCode('js-interact')">
+              複製
+            </button>
+            <pre><code class="language-javascript" id="js-interact">// 記錄互動事件
+const addInteraction = async (uuid, deviceId) => {
+    const response = await fetch(`http://localhost:3000/api/users/${uuid}/interactions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            deviceId: deviceId,
+            deviceName: '互動裝置 A',
+            actionType: 'scan',
+            data: {
+                content: 'QR Code 掃描',
+                location: '展區 1'
+            }
+        })
+    });
+    return await response.json();
+};</code></pre>
+          </div>
+
+          <div class="code-example">
+            <button class="copy-btn" onclick="copyCode('js-query')">
+              複製
+            </button>
+            <pre><code class="language-javascript" id="js-query">// 查詢用戶資料
+const getUserData = async (uuid) => {
+    const response = await fetch(`http://localhost:3000/api/users/${uuid}`);
+    const data = await response.json();
+    
+    if (data.success) {
+        console.log('用戶名稱:', data.data.username);
+        console.log('血型:', data.data.bloodType);
+        console.log('互動次數:', data.data.interactions.length);
+    }
+    return data.data;
+};</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="python-doc">
+          <h3>Python 範例</h3>
+
+          <div class="code-example">
+            <button class="copy-btn" onclick="copyCode('py-create')">
+              複製
+            </button>
+            <pre><code class="language-python" id="py-create">import requests
+import json
+
+# 新增用戶
+def create_user(blood_type, username):
+    url = 'http://localhost:3000/api/users'
+    data = {
+        'bloodType': blood_type,
+        'username': username
+    }
+    
+    response = requests.post(url, json=data)
+    result = response.json()
+    
+    if result['success']:
+        uuid = result['data']['uuid']
+        print(f'新用戶 UUID: {uuid}')
+        return uuid
+    return None
+
+# 使用範例
+uuid = create_user('A+', '測試用戶')</code></pre>
+          </div>
+
+          <div class="code-example">
+            <button class="copy-btn" onclick="copyCode('py-interact')">
+              複製
+            </button>
+            <pre><code class="language-python" id="py-interact"># 記錄互動
+def add_interaction(uuid, device_id, action_type):
+    url = f'http://localhost:3000/api/users/{uuid}/interactions'
+    data = {
+        'deviceId': device_id,
+        'deviceName': '互動裝置',
+        'actionType': action_type,
+        'data': {
+            'timestamp': datetime.now().isoformat()
+        }
+    }
+    
+    response = requests.post(url, json=data)
+    return response.json()</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="curl-doc">
+          <h3>cURL 命令範例</h3>
+
+          <div class="code-example">
+            <button class="copy-btn" onclick="copyCode('curl-create')">
+              複製
+            </button>
+            <pre><code class="language-bash" id="curl-create"># 新增用戶
+curl -X POST http://localhost:3000/api/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "bloodType": "A+",
+    "username": "測試用戶",
+    "department": "研發部"
+  }'</code></pre>
+          </div>
+
+          <div class="code-example">
+            <button class="copy-btn" onclick="copyCode('curl-get')">
+              複製
+            </button>
+            <pre><code class="language-bash" id="curl-get"># 查詢用戶
+curl http://localhost:3000/api/users/[UUID]
+
+# 查詢所有用戶
+curl http://localhost:3000/api/users
+
+# 依血型搜尋
+curl http://localhost:3000/api/users/search/bloodType/A+</code></pre>
+          </div>
+        </div>
+
+        <div class="tab-content" id="qrcode-doc">
+          <h3>QR Code 整合方案</h3>
+
+          <div class="code-example">
+            <button class="copy-btn" onclick="copyCode('qr-flow')">複製</button>
+            <pre><code class="language-javascript" id="qr-flow">// QR Code 掃描處理流程
+class QRCodeHandler {
+    constructor(apiBase = 'http://localhost:3000/api') {
+        this.apiBase = apiBase;
+    }
+    
+    // 1. 用戶註冊時生成 QR Code
+    async registerUser(bloodType, username) {
+        const response = await fetch(`${this.apiBase}/users`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ bloodType, username })
+        });
+        
+        const data = await response.json();
+        const uuid = data.data.uuid;
+        
+        // 生成 QR Code 內容
+        const qrContent = {
+            type: 'EXHIBITION_USER',
+            uuid: uuid,
+            bloodType: bloodType
+        };
+        
+        return JSON.stringify(qrContent);
+    }
+    
+    // 2. 裝置掃描 QR Code 後的處理
+    async handleQRScan(qrContent, deviceId) {
+        const qrData = JSON.parse(qrContent);
+        
+        // 記錄互動
+        await fetch(`${this.apiBase}/users/${qrData.uuid}/interactions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                deviceId: deviceId,
+                deviceName: `裝置 ${deviceId}`,
+                actionType: 'qr_scan',
+                data: {
+                    scanTime: new Date().toISOString(),
+                    deviceLocation: 'Exhibition Hall A'
+                }
+            })
+        });
+        
+        // 取得用戶資料
+        const userResponse = await fetch(`${this.apiBase}/users/${qrData.uuid}`);
+        const userData = await userResponse.json();
+        
+        return userData.data;
+    }
+    
+    // 3. 展覽結束時彙整資料
+    async getUserSummary(uuid) {
+        const response = await fetch(`${this.apiBase}/users/${uuid}`);
+        const data = await response.json();
+        
+        const user = data.data;
+        const summary = {
+            username: user.username,
+            bloodType: user.bloodType,
+            totalInteractions: user.interactions.length,
+            visitedDevices: [...new Set(user.interactions.map(i => i.deviceId))],
+            timeSpent: this.calculateTimeSpent(user.interactions),
+            journey: user.interactions.map(i => ({
+                device: i.deviceName,
+                time: i.timestamp,
+                action: i.actionType
+            }))
+        };
+        
+        return summary;
+    }
+    
+    calculateTimeSpent(interactions) {
+        if (interactions.length === 0) return 0;
+        const times = interactions.map(i => new Date(i.timestamp));
+        const first = Math.min(...times);
+        const last = Math.max(...times);
+        return Math.round((last - first) / 60000); // 分鐘
+    }
+}</code></pre>
+          </div>
+
+          <div class="code-example">
+            <h4>QR Code 內容格式建議</h4>
+            <pre><code class="language-json">{
+  "type": "EXHIBITION_USER",
+  "uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "bloodType": "A+",
+  "version": "1.0"
+}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI 整合 Prompt -->
+      <div class="card">
+        <h2>🤖 AI 整合 Prompt (可編輯並複製)</h2>
+        <div style="margin-bottom: 15px">
+          <button
+            class="copy-btn"
+            onclick="copyPrompt()"
+            style="float: none; margin-right: 10px"
+          >
+            複製 Prompt
+          </button>
+          <button
+            class="refresh-btn"
+            onclick="loadLatestUserData()"
+            style="padding: 6px 12px; font-size: 0.85rem"
+          >
+            載入最新用戶資料
+          </button>
+        </div>
+        <textarea
+          id="ai-prompt-textarea"
+          style="
+            width: 100%;
+            min-height: 600px;
+            background: var(--bg-secondary);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            resize: vertical;
+          "
+        >
+我需要連接到一個內網的展覽追蹤系統 API。
+
+系統資訊：
+- API 位址：http://localhost:3000/api (請替換成實際 IP)
+- 資料格式：JSON
+- 無需認證
+- 主要用途：記錄展覽參觀者的血型、姓名、入場時間和互動記錄
+
+資料結構：
+用戶物件包含 uuid (自動生成)、bloodType (A+/A-/B+/B-/AB+/AB-/O+/O-)、username、entryTime (自動記錄)、interactions 陣列、可自訂擴充欄位
+
+實際用戶資料範例：
+{
+  "uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "bloodType": "A+",
+  "username": "張小明",
+  "entryTime": "2024-01-01T10:00:00.000Z",
+  "interactions": [
+    {
+      "deviceId": "DEVICE001",
+      "deviceName": "互動螢幕 A",
+      "actionType": "scan",
+      "data": {
+        "content": "觀看展覽介紹",
+        "duration": 120
+      },
+      "timestamp": "2024-01-01T10:15:00.000Z"
+    }
+  ],
+  "department": "工程部",
+  "customField": "自訂資料",
+  "lastUpdated": "2024-01-01T10:15:00.000Z"
+}
+
+API 端點：
+GET /api/users - 取得所有用戶
+GET /api/users/{uuid} - 取得特定用戶
+POST /api/users - 新增用戶 (需要 bloodType 和 username)
+PUT /api/users/{uuid} - 更新用戶資料
+POST /api/users/{uuid}/interactions - 新增互動記錄 (需要 deviceId、deviceName、actionType)
+DELETE /api/users/{uuid} - 刪除用戶
+GET /api/users/search/{field}/{value} - 搜尋用戶 (例如：/search/bloodType/A+)
+POST /api/users/batch - 批次新增用戶 (陣列格式)
+GET /api/statistics - 取得統計資訊
+
+互動記錄格式：
+{ 
+  "deviceId": "設備編號", 
+  "deviceName": "設備名稱", 
+  "actionType": "動作類型", 
+  "data": {自訂資料}, 
+  "timestamp": "自動生成" 
+}
+
+成功回應格式：{ "success": true, "data": {...} }
+錯誤回應格式：{ "success": false, "error": "錯誤訊息" }
+
+錯誤碼說明：
+- 400: 請求錯誤（驗證失敗）
+- 404: 資源不存在
+- 500: 伺服器內部錯誤
+
+請幫我寫一個客戶端程式，包含：
+</textarea
+        >
+      </div>
+
+      <!-- 錯誤處理說明 -->
+      <div class="card">
+        <h2>⚠️ 錯誤處理</h2>
+        <div class="code-example">
+          <pre><code class="language-javascript">// 錯誤處理範例
+const apiCall = async (url, options = {}) => {
+    try {
+        const response = await fetch(url, options);
+        const data = await response.json();
+        
+        if (!data.success) {
+            console.error('API 錯誤:', data.error);
+            // 處理特定錯誤
+            switch(response.status) {
+                case 400:
+                    console.log('請求參數錯誤');
+                    break;
+                case 404:
+                    console.log('資源不存在');
+                    break;
+                case 500:
+                    console.log('伺服器錯誤');
+                    break;
+            }
+        }
+        
+        return data;
+    } catch (error) {
+        console.error('網路錯誤:', error);
+        return null;
+    }
+};</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+    <script>
+      const API_BASE = "http://localhost:3000/api";
+
+      // API 端點列表
+      const endpoints = [
+        { method: "GET", path: "/health", name: "健康檢查" },
+        { method: "GET", path: "/users", name: "取得所有用戶" },
+        { method: "POST", path: "/users", name: "新增用戶" },
+        { method: "GET", path: "/users/:uuid", name: "查詢用戶" },
+        { method: "PUT", path: "/users/:uuid", name: "更新用戶" },
+        { method: "POST", path: "/users/:uuid/interactions", name: "新增互動" },
+        { method: "DELETE", path: "/users/:uuid", name: "刪除用戶" },
+        { method: "POST", path: "/users/batch", name: "批次新增" },
+        { method: "GET", path: "/statistics", name: "統計資訊" },
+      ];
+
+      // 檢查 API 狀態
+      async function checkAPIStatus() {
+        const grid = document.getElementById("apiStatusGrid");
+        grid.innerHTML = "";
+
+        for (const endpoint of endpoints) {
+          const div = document.createElement("div");
+          div.className = "status-item";
+
+          let status = "loading";
+          let statusText = "檢測中...";
+
+          try {
+            if (
+              endpoint.path === "/health" ||
+              (endpoint.method === "GET" && !endpoint.path.includes(":uuid"))
+            ) {
+              const response = await fetch(API_BASE + endpoint.path);
+              if (response.ok) {
+                status = "success";
+                statusText = "正常";
+              } else {
+                status = "error";
+                statusText = "異常";
+              }
+            } else {
+              // 對於需要參數的端點，只檢查健康狀態
+              const healthCheck = await fetch(API_BASE + "/health");
+              if (healthCheck.ok) {
+                status = "success";
+                statusText = "就緒";
+              } else {
+                status = "error";
+                statusText = "離線";
+              }
+            }
+          } catch (error) {
+            status = "error";
+            statusText = "無法連線";
+          }
+
+          div.innerHTML = `
+                    <div class="status-indicator ${status}"></div>
+                    <div style="flex: 1;">
+                        <div>
+                            <span class="method-badge method-${endpoint.method.toLowerCase()}">${
+            endpoint.method
+          }</span>
+                            ${endpoint.name}
+                        </div>
+                        <div style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px;">
+                            ${endpoint.path} - ${statusText}
+                        </div>
+                    </div>
+                `;
+
+          grid.appendChild(div);
+        }
+      }
+
+      // 載入統計資料
+      async function loadStatistics() {
+        try {
+          const response = await fetch(API_BASE + "/statistics");
+          const data = await response.json();
+
+          if (data.success) {
+            const stats = data.data;
+            document.getElementById("totalUsers").textContent =
+              stats.totalUsers || "0";
+            document.getElementById("totalInteractions").textContent =
+              stats.totalInteractions || "0";
+            document.getElementById("avgInteractions").textContent = (
+              stats.averageInteractionsPerUser || 0
+            ).toFixed(1);
+            document.getElementById("apiStatus").textContent = "運行中";
+            document.getElementById("apiStatus").style.color = "var(--success)";
+          }
+        } catch (error) {
+          document.getElementById("apiStatus").textContent = "離線";
+          document.getElementById("apiStatus").style.color = "var(--error)";
+        }
+      }
+
+      // 載入目前資料
+      async function loadCurrentData() {
+        try {
+          const response = await fetch(API_BASE + "/users");
+          const data = await response.json();
+
+          if (data.success) {
+            const formatted = JSON.stringify(data.data, null, 2);
+            document.getElementById("currentData").textContent = formatted;
+            Prism.highlightElement(document.getElementById("currentData"));
+          }
+        } catch (error) {
+          document.getElementById("currentData").textContent = "無法載入資料";
+        }
+      }
+
+      // 切換標籤
+      function switchTab(tabName) {
+        // 移除所有 active
+        document
+          .querySelectorAll(".tab")
+          .forEach((tab) => tab.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((content) => content.classList.remove("active"));
+
+        // 設定 active
+        event.target.classList.add("active");
+        document.getElementById(`${tabName}-tab`).classList.add("active");
+
+        // 如果是目前資料標籤，載入資料
+        if (tabName === "current") {
+          loadCurrentData();
+        }
+      }
+
+      // 切換文檔標籤
+      function switchDocTab(tabName) {
+        // 移除所有 active
+        event.target.parentElement
+          .querySelectorAll(".tab")
+          .forEach((tab) => tab.classList.remove("active"));
+        event.target.parentElement.parentElement
+          .querySelectorAll(".tab-content")
+          .forEach((content) => content.classList.remove("active"));
+
+        // 設定 active
+        event.target.classList.add("active");
+        document.getElementById(`${tabName}-doc`).classList.add("active");
+      }
+
+      // 複製程式碼
+      function copyCode(codeId) {
+        const code = document.getElementById(codeId).textContent;
+        navigator.clipboard.writeText(code).then(() => {
+          const btn = event.target;
+          btn.textContent = "已複製!";
+          btn.classList.add("copied");
+          setTimeout(() => {
+            btn.textContent = "複製";
+            btn.classList.remove("copied");
+          }, 2000);
+        });
+      }
+
+      // 複製 AI Prompt
+      function copyPrompt() {
+        const promptText = document.getElementById("ai-prompt-textarea").value;
+        navigator.clipboard.writeText(promptText).then(() => {
+          const btn = event.target;
+          const originalText = btn.textContent;
+          btn.textContent = "已複製!";
+          btn.style.background = "var(--success)";
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = "";
+          }, 2000);
+        });
+      }
+
+      // 載入最新用戶資料到 Prompt
+      async function loadLatestUserData() {
+        try {
+          const response = await fetch(API_BASE + "/users");
+          const data = await response.json();
+
+          if (data.success && data.data.length > 0) {
+            // 取得最新的用戶資料
+            const latestUser = data.data[data.data.length - 1];
+
+            // 取得現有的 textarea 內容
+            const textarea = document.getElementById("ai-prompt-textarea");
+            const currentContent = textarea.value;
+
+            // 找到實際用戶資料範例的位置並替換
+            const startMarker = "實際用戶資料範例：";
+            const endMarker = "\n\nAPI 端點：";
+
+            const startIndex = currentContent.indexOf(startMarker);
+            const endIndex = currentContent.indexOf(endMarker);
+
+            if (startIndex !== -1 && endIndex !== -1) {
+              const newUserExample =
+                startMarker + "\n" + JSON.stringify(latestUser, null, 2);
+              const newContent =
+                currentContent.substring(0, startIndex) +
+                newUserExample +
+                currentContent.substring(endIndex);
+              textarea.value = newContent;
+
+              // 顯示成功訊息
+              const btn = event.target;
+              const originalText = btn.textContent;
+              btn.textContent = "已載入最新資料!";
+              btn.style.background = "var(--success)";
+              setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = "";
+              }, 2000);
+            }
+          } else {
+            alert("目前沒有用戶資料");
+          }
+        } catch (error) {
+          console.error("載入資料失敗:", error);
+          alert("載入資料失敗");
+        }
+      }
+
+      // 重新整理所有
+      async function refreshAll() {
+        const btn = event.target;
+        btn.disabled = true;
+
+        await Promise.all([
+          checkAPIStatus(),
+          loadStatistics(),
+          loadCurrentData(),
+        ]);
+
+        btn.disabled = false;
+      }
+
+      // 初始載入
+      window.addEventListener("DOMContentLoaded", () => {
+        checkAPIStatus();
+        loadStatistics();
+
+        // 每 10 秒自動更新
+        setInterval(() => {
+          checkAPIStatus();
+          loadStatistics();
+        }, 10000);
+      });
+    </script>
+  </body>
+</html>

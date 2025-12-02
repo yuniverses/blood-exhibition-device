@@ -1,0 +1,156 @@
+{
+  "hosts": {
+    "local": {
+      "id": "local",
+      "name": "本機",
+      "address": "127.0.0.1",
+      "type": "local"
+    },
+    "host-a": {
+      "id": "host-a",
+      "name": "A區主機",
+      "address": "127.0.0.1",
+      "type": "local",
+      "note": "部署時改成實際 IP，type 改成 remote"
+    },
+    "host-b": {
+      "id": "host-b",
+      "name": "B區主機",
+      "address": "127.0.0.1",
+      "type": "local",
+      "note": "部署時改成實際 IP，type 改成 remote"
+    },
+    "host-c": {
+      "id": "host-c",
+      "name": "C區主機",
+      "address": "127.0.0.1",
+      "type": "local",
+      "note": "部署時改成實際 IP，type 改成 remote"
+    },
+    "host-d": {
+      "id": "host-d",
+      "name": "D區主機",
+      "address": "127.0.0.1",
+      "type": "local",
+      "note": "部署時改成實際 IP，type 改成 remote"
+    }
+  },
+  "backend": {
+    "id": "backend-api",
+    "name": "後台 API 服務",
+    "type": "backend",
+    "host": "host-a",
+    "path": "../blood-exhibition_InputUserData",
+    "command": "npm",
+    "args": ["start"],
+    "port": 3000,
+    "healthCheck": "/api/health",
+    "required": true,
+    "autoStart": true,
+    "description": "核心後台服務，所有裝置依賴此服務"
+  },
+  "devices": [
+    {
+      "id": "sticker-device",
+      "name": "A. 貼紙系統",
+      "type": "device",
+      "host": "host-a",
+      "path": "../blood-exhibition_Device/blood-exhibition_A_StickerDevice",
+      "command": "npm",
+      "args": ["start"],
+      "port": 8080,
+      "healthCheck": "/input",
+      "screens": [
+        {
+          "id": "input",
+          "name": "iPad 輸入頁面",
+          "url": "/input",
+          "description": "用於訪客輸入個人資料",
+          "defaultDisplay": 0
+        },
+        {
+          "id": "display",
+          "name": "大螢幕展示",
+          "url": "/display",
+          "description": "展示歡迎畫面和血型資訊",
+          "defaultDisplay": 1
+        }
+      ],
+      "description": "訪客輸入資料並取得 QR Code 的系統"
+    },
+    {
+      "id": "mission-device",
+      "name": "B. 任務系統",
+      "type": "device",
+      "host": "host-b",
+      "path": "../blood-exhibition_Device/blood-exhibition_B_Mission",
+      "command": "npm",
+      "args": ["start"],
+      "port": 8080,
+      "healthCheck": "/",
+      "screens": [
+        {
+          "id": "mission-main",
+          "name": "任務主畫面",
+          "url": "/",
+          "description": "互動任務介面",
+          "defaultDisplay": 0
+        }
+      ],
+      "enabled": false,
+      "description": "訪客互動任務系統（尚未實作）"
+    },
+    {
+      "id": "video-device-c",
+      "name": "C. 影片系統",
+      "type": "device",
+      "host": "host-c",
+      "path": "../blood-exhibition_Device/blood-exhibition_C_Video",
+      "command": "npm",
+      "args": ["start"],
+      "port": 8080,
+      "healthCheck": "/",
+      "screens": [
+        {
+          "id": "video-main",
+          "name": "影片主畫面",
+          "url": "/",
+          "description": "影片播放介面",
+          "defaultDisplay": 0
+        }
+      ],
+      "enabled": false,
+      "description": "C區影片播放系統（尚未實作）"
+    },
+    {
+      "id": "video-device-d",
+      "name": "D. 影片系統",
+      "type": "device",
+      "host": "host-d",
+      "path": "../blood-exhibition_Device/blood-exhibition_D_Video",
+      "command": "npm",
+      "args": ["start"],
+      "port": 8080,
+      "healthCheck": "/",
+      "screens": [
+        {
+          "id": "video-main",
+          "name": "影片主畫面",
+          "url": "/",
+          "description": "影片播放介面",
+          "defaultDisplay": 0
+        }
+      ],
+      "enabled": false,
+      "description": "D區影片播放系統（尚未實作）"
+    }
+  ],
+  "displays": {
+    "note": "這裡可以配置顯示器/投影機的設定，索引從 0 開始",
+    "mapping": {
+      "0": "主螢幕（控制台）",
+      "1": "投影機/大螢幕 1",
+      "2": "投影機/大螢幕 2"
+    }
+  }
+}

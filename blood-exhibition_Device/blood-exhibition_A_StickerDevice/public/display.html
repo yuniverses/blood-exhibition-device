@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>血型展覽 - 顯示螢幕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: #000;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .idle-screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #dc2626, #ef4444, #f87171, #fca5a5);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .idle-content {
+            text-align: center;
+            color: white;
+            animation: fadeInOut 4s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .idle-title {
+            font-size: 5em;
+            font-weight: 300;
+            letter-spacing: 5px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .idle-subtitle {
+            font-size: 2em;
+            opacity: 0.8;
+            letter-spacing: 2px;
+        }
+
+        .blood-drops {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .blood-drop {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, rgba(220, 38, 38, 0.8) 0%, rgba(220, 38, 38, 0) 70%);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .user-display {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .user-display.active {
+            display: flex;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .welcome-message {
+            font-size: 3em;
+            margin-bottom: 10px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            opacity: 0.9;
+        }
+
+        .user-name {
+            font-size: 5em;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out 0.4s both;
+            font-weight: bold;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .blood-type-display {
+            text-align: center;
+            animation: fadeInUp 1s ease-out 0.7s both;
+        }
+
+        .blood-type-circle {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blood-type-circle::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%); }
+            100% { transform: translateX(100%) translateY(100%); }
+        }
+
+        .blood-type-text {
+            font-size: 6em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            z-index: 1;
+            position: relative;
+        }
+
+        .blood-info {
+            max-width: 1000px;
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        .blood-info-title {
+            font-size: 3em;
+            margin-bottom: 30px;
+        }
+
+        .blood-info-content {
+            font-size: 1.8em;
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+
+        .percentage-display {
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            animation: fadeInUp 1s ease-out 1.2s both;
+        }
+
+        .percentage-value {
+            font-size: 4em;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .percentage-label {
+            font-size: 1.5em;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .particle-circle {
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: particleFloat 10s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            from {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) translateX(10px) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(10vh) translateX(-10px) scale(1);
+            }
+            to {
+                transform: translateY(0) translateX(0) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .all-blood-types {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            animation: fadeInUp 1s ease-out 1.5s both;
+        }
+
+        .blood-type-item {
+            text-align: center;
+        }
+
+        .blood-type-item-name {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+
+        .blood-type-item-percentage {
+            font-size: 1.2em;
+            color: #fca5a5;
+        }
+
+        .blood-type-item.current {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+
+        .blood-type-item.current .blood-type-item-name {
+            opacity: 1;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="idle-screen" id="idleScreen">
+        <div class="blood-drops" id="bloodDrops"></div>
+        <div class="idle-content">
+            <h1 class="idle-title">血型探索之旅</h1>
+            <p class="idle-subtitle">發現血液的奧秘</p>
+        </div>
+    </div>
+
+    <div class="user-display" id="userDisplay">
+        <h1 class="welcome-message" id="welcomeMessage">歡迎</h1>
+        <h2 class="user-name" id="userName"></h2>
+        
+        <div class="blood-type-display">
+            <div class="blood-type-circle">
+                <span class="blood-type-text" id="bloodTypeText">A+</span>
+            </div>
+        </div>
+
+        <div class="blood-info">
+            <h2 class="blood-info-title" id="bloodInfoTitle">A 型血</h2>
+            <p class="blood-info-content" id="bloodInfoContent"></p>
+            
+            <div class="percentage-display">
+                <div class="percentage-value" id="percentageValue">26.6%</div>
+                <div class="percentage-label">在臺灣人口中的比例</div>
+            </div>
+        </div>
+
+        <div class="all-blood-types">
+            <div class="blood-type-item" data-type="A+">
+                <div class="blood-type-item-name">A+</div>
+                <div class="blood-type-item-percentage">26.6%</div>
+            </div>
+            <div class="blood-type-item" data-type="B+">
+                <div class="blood-type-item-name">B+</div>
+                <div class="blood-type-item-percentage">23.9%</div>
+            </div>
+            <div class="blood-type-item" data-type="O+">
+                <div class="blood-type-item-name">O+</div>
+                <div class="blood-type-item-percentage">43.6%</div>
+            </div>
+            <div class="blood-type-item" data-type="AB+">
+                <div class="blood-type-item-name">AB+</div>
+                <div class="blood-type-item-percentage">6.0%</div>
+            </div>
+            <div class="blood-type-item" data-type="A-">
+                <div class="blood-type-item-name">A-</div>
+                <div class="blood-type-item-percentage">0.3%</div>
+            </div>
+            <div class="blood-type-item" data-type="B-">
+                <div class="blood-type-item-name">B-</div>
+                <div class="blood-type-item-percentage">0.2%</div>
+            </div>
+            <div class="blood-type-item" data-type="O-">
+                <div class="blood-type-item-name">O-</div>
+                <div class="blood-type-item-percentage">0.4%</div>
+            </div>
+            <div class="blood-type-item" data-type="AB-">
+                <div class="blood-type-item-name">AB-</div>
+                <div class="blood-type-item-percentage">0.1%</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let displayTimeout;
+
+        function createBloodDrops() {
+            const container = document.getElementById('bloodDrops');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 15; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'blood-drop';
+                drop.style.left = Math.random() * 100 + '%';
+                drop.style.animationDelay = Math.random() * 20 + 's';
+                drop.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(drop);
+            }
+        }
+
+        function createParticles() {
+            const userDisplay = document.getElementById('userDisplay');
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.innerHTML = '<div class="particle-circle"></div>';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                userDisplay.appendChild(particle);
+            }
+        }
+
+        socket.on('newUser', (userData) => {
+            clearTimeout(displayTimeout);
+
+            const idleScreen = document.getElementById('idleScreen');
+            const userDisplay = document.getElementById('userDisplay');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const userName = document.getElementById('userName');
+            const bloodTypeText = document.getElementById('bloodTypeText');
+            const bloodInfoTitle = document.getElementById('bloodInfoTitle');
+            const bloodInfoContent = document.getElementById('bloodInfoContent');
+            const percentageValue = document.getElementById('percentageValue');
+
+            welcomeMessage.textContent = '歡迎';
+            userName.textContent = userData.username;
+            bloodTypeText.textContent = userData.bloodType;
+            
+            if (userData.bloodTypeInfo) {
+                bloodInfoTitle.textContent = userData.bloodTypeInfo.title;
+                bloodInfoContent.textContent = userData.bloodTypeInfo.content;
+                percentageValue.textContent = userData.bloodTypeInfo.percentage;
+
+                const bloodTypeCircle = document.querySelector('.blood-type-circle');
+                bloodTypeCircle.style.boxShadow = `0 20px 60px ${userData.bloodTypeInfo.color}40`;
+            }
+
+            document.querySelectorAll('.blood-type-item').forEach(item => {
+                if (item.dataset.type === userData.bloodType) {
+                    item.classList.add('current');
+                } else {
+                    item.classList.remove('current');
+                }
+            });
+
+            idleScreen.style.display = 'none';
+            userDisplay.classList.add('active');
+
+            displayTimeout = setTimeout(() => {
+                userDisplay.classList.remove('active');
+                setTimeout(() => {
+                    idleScreen.style.display = 'flex';
+                    userDisplay.querySelectorAll('.particle').forEach(p => p.remove());
+                }, 800);
+            }, 15000);
+
+            createParticles();
+        });
+
+        createBloodDrops();
+        setInterval(createBloodDrops, 60000);
+    </script>
+</body>
+</html>

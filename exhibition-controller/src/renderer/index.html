@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>展場控制系統</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h1::before {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: #e74c3c;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: #3498db;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2980b9;
+      transform: translateY(-1px);
+    }
+
+    .btn-success {
+      background: #27ae60;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #219a52;
+    }
+
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .section {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+    }
+
+    /* 後台狀態卡片 */
+    .backend-card {
+      background: linear-gradient(135deg, rgba(231, 76, 60, 0.2) 0%, rgba(192, 57, 43, 0.2) 100%);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .backend-card.healthy {
+      background: linear-gradient(135deg, rgba(39, 174, 96, 0.2) 0%, rgba(33, 154, 82, 0.2) 100%);
+      border-color: rgba(39, 174, 96, 0.3);
+    }
+
+    .backend-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .status-indicator {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .status-indicator.running {
+      background: rgba(39, 174, 96, 0.3);
+    }
+
+    .status-indicator.stopped {
+      background: rgba(231, 76, 60, 0.3);
+    }
+
+    .status-indicator.starting {
+      background: rgba(241, 196, 15, 0.3);
+      animation: pulse 1s infinite;
+    }
+
+    .backend-details h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .backend-details p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .backend-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* 裝置卡片 */
+    .devices-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+    }
+
+    .device-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+
+    .device-card:hover {
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+
+    .device-card.disabled {
+      opacity: 0.5;
+    }
+
+    .device-header {
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .device-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .device-status {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #e74c3c;
+    }
+
+    .device-status.running {
+      background: #27ae60;
+      box-shadow: 0 0 10px rgba(39, 174, 96, 0.5);
+    }
+
+    .device-status.starting {
+      background: #f1c40f;
+      animation: pulse 1s infinite;
+    }
+
+    .device-name {
+      font-weight: 500;
+    }
+
+    .device-port {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .device-body {
+      padding: 16px;
+    }
+
+    .device-description {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 16px;
+    }
+
+    .screens-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .screen-item {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .screen-info {
+      flex: 1;
+    }
+
+    .screen-name {
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .screen-description {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .screen-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .display-select {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: white;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .display-select option {
+      background: #1a1a2e;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    .device-footer {
+      padding: 12px 16px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* 日誌區域 */
+    .log-container {
+      background: #0d1117;
+      border-radius: 8px;
+      height: 200px;
+      overflow-y: auto;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 12px;
+      padding: 12px;
+    }
+
+    .log-entry {
+      padding: 2px 0;
+      word-break: break-all;
+    }
+
+    .log-entry.stdout {
+      color: #7ee787;
+    }
+
+    .log-entry.stderr {
+      color: #f85149;
+    }
+
+    .log-source {
+      color: #58a6ff;
+      margin-right: 8px;
+    }
+
+    /* 顯示器區域 */
+    .displays-container {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .display-item {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .display-icon {
+      font-size: 24px;
+    }
+
+    .display-info h4 {
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .display-info p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* 開啟的視窗區域 */
+    .open-windows {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .window-tag {
+      background: rgba(52, 152, 219, 0.2);
+      border: 1px solid rgba(52, 152, 219, 0.3);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .window-tag .close-btn {
+      background: rgba(231, 76, 60, 0.3);
+      border: none;
+      border-radius: 4px;
+      color: white;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .window-tag .close-btn:hover {
+      background: rgba(231, 76, 60, 0.5);
+    }
+
+    .empty-message {
+      color: rgba(255,255,255,0.4);
+      font-style: italic;
+    }
+
+    /* 滾動條樣式 */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>展場控制系統</h1>
+      <div class="header-actions">
+        <button class="btn btn-success" id="startAllBtn">全部啟動</button>
+        <button class="btn btn-danger" id="stopAllBtn">全部停止</button>
+      </div>
+    </header>
+
+    <!-- 後台狀態 -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">後台服務</h2>
+      </div>
+      <div class="backend-card" id="backendCard">
+        <div class="backend-info">
+          <div class="status-indicator stopped" id="backendIndicator">
+            <span id="backendIcon">⏹</span>
+          </div>
+          <div class="backend-details">
+            <h3 id="backendName">後台 API 服務</h3>
+            <p id="backendStatus">狀態：已停止 | Port: 3000</p>
+          </div>
+        </div>
+        <div class="backend-actions">
+          <button class="btn btn-success" id="startBackendBtn">啟動</button>
+          <button class="btn btn-danger" id="stopBackendBtn" disabled>停止</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 顯示器資訊 -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">可用顯示器</h2>
+        <button class="btn btn-secondary btn-sm" id="refreshDisplaysBtn">重新整理</button>
+      </div>
+      <div class="displays-container" id="displaysContainer">
+        <!-- 動態生成 -->
+      </div>
+    </section>
+
+    <!-- 裝置列表 -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">展場裝置</h2>
+      </div>
+      <div class="devices-grid" id="devicesGrid">
+        <!-- 動態生成 -->
+      </div>
+    </section>
+
+    <!-- 開啟的視窗 -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">開啟的畫面</h2>
+        <button class="btn btn-secondary btn-sm" id="closeAllScreensBtn">關閉所有畫面</button>
+      </div>
+      <div class="open-windows" id="openWindows">
+        <span class="empty-message">尚無開啟的畫面</span>
+      </div>
+    </section>
+
+    <!-- 系統日誌 -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">系統日誌</h2>
+        <button class="btn btn-secondary btn-sm" id="clearLogBtn">清除</button>
+      </div>
+      <div class="log-container" id="logContainer">
+        <div class="log-entry"><span class="log-source">[系統]</span>控制系統已啟動</div>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
