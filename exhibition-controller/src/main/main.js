@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, shell } = require('electron');
 const path = require('path');
 const DeviceManager = require('./deviceManager');
 const WindowManager = require('./windowManager');
@@ -188,6 +188,16 @@ function setupIPC() {
       return await deviceManager.checkBackendHealth();
     }
     return await deviceManager.checkDeviceHealth(deviceId);
+  });
+
+  // 打開外部連結
+  ipcMain.handle('open-external', async (event, url) => {
+    try {
+      await shell.openExternal(url);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   });
 
   // 訂閱裝置狀態更新

@@ -31,6 +31,9 @@ contextBridge.exposeInMainWorld('api', {
   // 健康檢查
   healthCheck: (deviceId) => ipcRenderer.invoke('health-check', deviceId),
 
+  // 打開外部連結
+  openExternal: (url) => ipcRenderer.invoke('open-external', url),
+
   // 事件監聽
   onDeviceStatusUpdate: (callback) => {
     ipcRenderer.on('device-status-update', (event, status) => callback(status));

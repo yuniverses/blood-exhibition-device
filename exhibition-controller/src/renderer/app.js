@@ -59,6 +59,18 @@ class ExhibitionController {
   }
 
   setupEventListeners() {
+    // 打開 API 文檔
+    document.getElementById('openApiDocsBtn').addEventListener('click', async () => {
+      try {
+        const result = await window.api.openExternal('http://localhost:3000');
+        if (!result.success) {
+          this.log('系統', `開啟 API 文檔失敗: ${result.error}`, 'stderr');
+        }
+      } catch (error) {
+        this.log('系統', `開啟 API 文檔失敗: ${error.message}`, 'stderr');
+      }
+    });
+
     // 全部啟動
     document.getElementById('startAllBtn').addEventListener('click', async () => {
       this.log('系統', '正在啟動所有服務...');
