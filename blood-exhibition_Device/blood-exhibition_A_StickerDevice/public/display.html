@@ -13,7 +13,7 @@
 
         body {
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            background: #000;
+            background: #FCF3D3;
             overflow: hidden;
             width: 100vw;
             height: 100vh;
@@ -28,26 +28,12 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(45deg, #dc2626, #ef4444, #f87171, #fca5a5);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            background: #FCF3D3;
         }
 
         .idle-content {
             text-align: center;
-            color: white;
-            animation: fadeInOut 4s ease-in-out infinite;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
+            color: #CB433F;
         }
 
         .idle-title {
@@ -55,219 +41,122 @@
             font-weight: 300;
             letter-spacing: 5px;
             margin-bottom: 30px;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
         }
 
         .idle-subtitle {
             font-size: 2em;
-            opacity: 0.8;
             letter-spacing: 2px;
+            color: #2C2C2C;
         }
 
         .blood-drops {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
+            display: none;
         }
 
         .blood-drop {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background: radial-gradient(circle, rgba(220, 38, 38, 0.8) 0%, rgba(220, 38, 38, 0) 70%);
-            border-radius: 50%;
-            animation: float 20s infinite linear;
-        }
-
-        @keyframes float {
-            from {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            to {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
+            display: none;
         }
 
         .user-display {
             position: absolute;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            background: #FCF3D3;
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: white;
+            color: #2C2C2C;
         }
 
         .user-display.active {
             display: flex;
-            animation: slideIn 0.8s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
         }
 
         .welcome-message {
             font-size: 3em;
             margin-bottom: 10px;
-            animation: fadeInUp 1s ease-out 0.3s both;
-            opacity: 0.9;
+            color: #CB433F;
         }
 
         .user-name {
             font-size: 5em;
             margin-bottom: 40px;
-            animation: fadeInUp 1s ease-out 0.4s both;
             font-weight: bold;
-            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            color: #CB433F;
         }
 
         .blood-type-display {
             text-align: center;
-            animation: fadeInUp 1s ease-out 0.7s both;
         }
 
         .blood-type-circle {
             width: 250px;
             height: 250px;
             border-radius: 50%;
-            background: white;
+            background: #FFF9E8;
             display: flex;
             justify-content: center;
             align-items: center;
             margin: 0 auto 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 3px solid #CB433F;
             position: relative;
-            overflow: hidden;
-        }
-
-        .blood-type-circle::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%); }
-            100% { transform: translateX(100%) translateY(100%); }
         }
 
         .blood-type-text {
             font-size: 6em;
             font-weight: bold;
-            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            z-index: 1;
-            position: relative;
+            color: #CB433F;
         }
 
         .blood-info {
             max-width: 1000px;
             text-align: center;
             padding: 40px;
-            background: rgba(255, 255, 255, 0.1);
+            background: #FFF9E8;
             border-radius: 30px;
-            backdrop-filter: blur(10px);
-            animation: fadeInUp 1s ease-out 0.9s both;
+            border: 1px solid rgba(203, 67, 63, 0.3);
         }
 
         .blood-info-title {
             font-size: 3em;
             margin-bottom: 30px;
+            color: #CB433F;
         }
 
         .blood-info-content {
             font-size: 1.8em;
             line-height: 1.8;
             white-space: pre-line;
+            color: #2C2C2C;
         }
 
         .percentage-display {
             margin-top: 40px;
             padding: 30px;
-            background: rgba(255, 255, 255, 0.2);
+            background: #FCF3D3;
             border-radius: 20px;
-            animation: fadeInUp 1s ease-out 1.2s both;
+            border: 1px solid rgba(203, 67, 63, 0.3);
         }
 
         .percentage-value {
             font-size: 4em;
             font-weight: bold;
-            color: #ffffff;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            color: #CB433F;
         }
 
         .percentage-label {
             font-size: 1.5em;
             margin-top: 10px;
-            opacity: 0.9;
+            color: #2C2C2C;
         }
 
         .particle {
-            position: absolute;
-            pointer-events: none;
+            display: none;
         }
 
         .particle-circle {
-            width: 10px;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            animation: particleFloat 10s infinite linear;
-        }
-
-        @keyframes particleFloat {
-            from {
-                transform: translateY(100vh) translateX(0) scale(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-                transform: translateY(90vh) translateX(10px) scale(1);
-            }
-            90% {
-                opacity: 1;
-                transform: translateY(10vh) translateX(-10px) scale(1);
-            }
-            to {
-                transform: translateY(0) translateX(0) scale(0);
-                opacity: 0;
-            }
+            display: none;
         }
 
         .all-blood-types {
@@ -278,9 +167,9 @@
             display: flex;
             gap: 30px;
             padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
+            background: #FFF9E8;
             border-radius: 20px;
-            animation: fadeInUp 1s ease-out 1.5s both;
+            border: 1px solid rgba(203, 67, 63, 0.3);
         }
 
         .blood-type-item {
@@ -290,23 +179,22 @@
         .blood-type-item-name {
             font-size: 1.5em;
             margin-bottom: 10px;
-            opacity: 0.7;
+            color: #2C2C2C;
         }
 
         .blood-type-item-percentage {
             font-size: 1.2em;
-            color: #fca5a5;
-        }
-
-        .blood-type-item.current {
-            transform: scale(1.2);
-            opacity: 1;
+            color: #2C2C2C;
         }
 
         .blood-type-item.current .blood-type-item-name {
-            opacity: 1;
-            color: #ffffff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            color: #CB433F;
+            font-weight: bold;
+        }
+
+        .blood-type-item.current .blood-type-item-percentage {
+            color: #CB433F;
+            font-weight: bold;
         }
     </style>
 </head>

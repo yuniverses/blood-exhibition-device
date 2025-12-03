@@ -13,7 +13,7 @@
 
         body {
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            background: #FCF3D3;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -22,24 +22,24 @@
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.95);
+            background: #FFF9E8;
             border-radius: 30px;
             padding: 50px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(203, 67, 63, 0.3);
             max-width: 600px;
             width: 100%;
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #CB433F;
             margin-bottom: 10px;
             font-size: 2.5em;
         }
 
         .subtitle {
             text-align: center;
-            color: #666;
+            color: #2C2C2C;
             margin-bottom: 40px;
             font-size: 1.2em;
         }
@@ -50,7 +50,7 @@
 
         label {
             display: block;
-            color: #555;
+            color: #2C2C2C;
             font-size: 1.2em;
             margin-bottom: 10px;
             font-weight: 500;
@@ -60,17 +60,16 @@
             width: 100%;
             padding: 20px;
             font-size: 1.2em;
-            border: 2px solid #e0e0e0;
+            border: 1px solid rgba(203, 67, 63, 0.3);
             border-radius: 15px;
             transition: all 0.3s;
-            background: #f9f9f9;
+            background: #FFF9E8;
         }
 
         input[type="text"]:focus {
             outline: none;
-            border-color: #dc2626;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+            border-color: #CB433F;
+            background: #FFF9E8;
         }
 
         .blood-type-grid {
@@ -82,28 +81,25 @@
 
         .blood-type-btn {
             padding: 20px;
-            border: 3px solid #e0e0e0;
+            border: 1px solid rgba(203, 67, 63, 0.3);
             border-radius: 15px;
-            background: #f9f9f9;
+            background: #FFF9E8;
             cursor: pointer;
             transition: all 0.3s;
             font-size: 1.3em;
             font-weight: bold;
             text-align: center;
-            color: #666;
+            color: #2C2C2C;
         }
 
         .blood-type-btn:hover {
-            background: #f0f0f0;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: #FCF3D3;
         }
 
         .blood-type-btn.selected {
-            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-            color: white;
-            border-color: transparent;
-            transform: scale(1.05);
+            background: #CB433F;
+            color: #FCF3D3;
+            border-color: #CB433F;
         }
 
         .submit-btn {
@@ -111,23 +107,22 @@
             padding: 25px;
             font-size: 1.5em;
             font-weight: bold;
-            color: white;
-            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            color: #FCF3D3;
+            background: #CB433F;
             border: none;
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
             margin-top: 30px;
-            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
         }
 
         .submit-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(220, 38, 38, 0.4);
+            background: #A5352F;
         }
 
         .submit-btn:disabled {
-            opacity: 0.5;
+            background: #E8DDB8;
+            color: #999;
             cursor: not-allowed;
         }
 
@@ -142,8 +137,8 @@
         }
 
         .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #dc2626;
+            border: 4px solid #FCF3D3;
+            border-top: 4px solid #CB433F;
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -160,8 +155,8 @@
             display: none;
             text-align: center;
             padding: 30px;
-            background: #4caf50;
-            color: white;
+            background: #CB433F;
+            color: #FCF3D3;
             border-radius: 15px;
             margin-top: 20px;
             font-size: 1.3em;
@@ -169,27 +164,15 @@
 
         .success-message.active {
             display: block;
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .sticker-preview {
             display: none;
             margin-top: 30px;
             padding: 30px;
-            background: white;
+            background: #FFF9E8;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(203, 67, 63, 0.3);
         }
 
         .sticker-preview.active {
@@ -203,20 +186,20 @@
         .sticker-name {
             font-size: 2em;
             font-weight: bold;
-            color: #333;
+            color: #2C2C2C;
             margin-bottom: 20px;
         }
 
         .sticker-blood-type {
             display: inline-block;
             padding: 10px 30px;
-            border: 3px solid #333;
-            color: #333;
+            border: 2px solid #CB433F;
+            color: #CB433F;
             border-radius: 50px;
             font-size: 1.5em;
             font-weight: bold;
             margin-bottom: 20px;
-            background: white;
+            background: #FFF9E8;
         }
 
         .qr-code {
@@ -232,8 +215,8 @@
             margin-top: 20px;
             padding: 15px 40px;
             font-size: 1.2em;
-            background: #4caf50;
-            color: white;
+            background: #CB433F;
+            color: #FCF3D3;
             border: none;
             border-radius: 15px;
             cursor: pointer;
@@ -241,36 +224,34 @@
         }
 
         .print-btn:hover {
-            background: #45a049;
-            transform: translateY(-2px);
+            background: #A5352F;
         }
 
         @media print {
             body {
-                background: white;
+                background: #FCF3D3;
             }
-            
+
             .container {
-                box-shadow: none;
+                border: none;
                 padding: 0;
-                background: white;
+                background: #FFF9E8;
             }
 
             .sticker-preview {
-                box-shadow: none;
+                border: none;
                 page-break-inside: avoid;
-                background: white;
-                color: black;
+                background: #FFF9E8;
             }
 
             .sticker-name {
-                color: black !important;
+                color: #2C2C2C !important;
             }
 
             .sticker-blood-type {
-                background: white !important;
-                color: black !important;
-                border: 2px solid black !important;
+                background: #FFF9E8 !important;
+                color: #CB433F !important;
+                border: 2px solid #CB433F !important;
             }
 
             .print-btn, .submit-btn, form {

@@ -13,7 +13,7 @@
 
         body {
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: #FCF3D3;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -23,7 +23,7 @@
         /* 待機狀態 */
         .idle-state {
             text-align: center;
-            color: white;
+            color: #CB433F;
             display: block;
         }
 
@@ -35,31 +35,19 @@
             font-size: 4em;
             margin-bottom: 30px;
             font-weight: 300;
-            animation: fadeInOut 3s ease-in-out infinite;
         }
 
         .scan-prompt {
             font-size: 2em;
-            color: #fbbf24;
-            animation: blink 1.5s ease-in-out infinite;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            color: #2C2C2C;
         }
 
         /* 貼紙容器 */
         .sticker-container {
-            background: white;
+            background: #FFF9E8;
             border-radius: 30px;
             padding: 60px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(203, 67, 63, 0.3);
             max-width: 800px;
             width: 90%;
             display: none;
@@ -67,37 +55,25 @@
 
         .sticker-container.active {
             display: block;
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
         }
 
         .sticker-header {
             text-align: center;
-            border-bottom: 3px solid #f5576c;
+            border-bottom: 2px solid #CB433F;
             padding-bottom: 30px;
             margin-bottom: 40px;
         }
 
         .sticker-title {
             font-size: 3em;
-            color: #f5576c;
+            color: #CB433F;
             margin-bottom: 15px;
             font-weight: bold;
         }
 
         .sticker-subtitle {
             font-size: 1.5em;
-            color: #666;
+            color: #2C2C2C;
         }
 
         .sticker-body {
@@ -110,14 +86,14 @@
 
         .info-label {
             font-size: 1.3em;
-            color: #666;
+            color: #2C2C2C;
             margin-bottom: 10px;
             font-weight: 500;
         }
 
         .info-value {
             font-size: 2.5em;
-            color: #333;
+            color: #CB433F;
             font-weight: bold;
         }
 
@@ -130,8 +106,8 @@
 
         .badge {
             display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: #CB433F;
+            color: #FCF3D3;
             padding: 15px 30px;
             border-radius: 50px;
             font-size: 1.8em;
@@ -140,7 +116,8 @@
         }
 
         .badge.hero {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: #CB433F;
+            border: 2px solid #CB433F;
         }
 
         .stats-grid {
@@ -151,30 +128,32 @@
         }
 
         .stat-item {
-            background: #f8f9fa;
+            background: #FCF3D3;
             padding: 25px;
             border-radius: 15px;
             text-align: center;
+            border: 1px solid rgba(203, 67, 63, 0.3);
         }
 
         .stat-value {
             font-size: 2.5em;
             font-weight: bold;
-            color: #f5576c;
+            color: #CB433F;
         }
 
         .stat-label {
             font-size: 1.2em;
-            color: #666;
+            color: #2C2C2C;
             margin-top: 10px;
         }
 
         .qr-code-section {
             text-align: center;
             padding: 30px;
-            background: #f8f9fa;
+            background: #FCF3D3;
             border-radius: 20px;
             margin-bottom: 30px;
+            border: 1px solid rgba(203, 67, 63, 0.3);
         }
 
         .qr-code-section img {
@@ -184,7 +163,7 @@
 
         .qr-label {
             font-size: 1.2em;
-            color: #666;
+            color: #2C2C2C;
             margin-top: 15px;
         }
 
@@ -205,45 +184,44 @@
         }
 
         .btn-print {
-            background: #10b981;
-            color: white;
+            background: #CB433F;
+            color: #FCF3D3;
         }
 
         .btn-print:hover {
-            background: #059669;
-            transform: translateY(-2px);
+            background: #A5352F;
         }
 
         .btn-back {
-            background: #6b7280;
-            color: white;
+            background: #FFF9E8;
+            color: #2C2C2C;
+            border: 1px solid #CB433F;
         }
 
         .btn-back:hover {
-            background: #4b5563;
-            transform: translateY(-2px);
+            background: #FCF3D3;
         }
 
         /* 已列印提示 */
         .already-printed {
             text-align: center;
             padding: 40px;
-            background: #f0fdf4;
+            background: #FFF9E8;
             border-radius: 20px;
             margin-bottom: 30px;
-            border: 3px solid #10b981;
+            border: 2px solid #CB433F;
         }
 
         .printed-badge {
             font-size: 3em;
             font-weight: bold;
-            color: #10b981;
+            color: #CB433F;
             margin-bottom: 20px;
         }
 
         .printed-message {
             font-size: 1.5em;
-            color: #059669;
+            color: #2C2C2C;
         }
 
         /* 測試控制 */
@@ -256,14 +234,21 @@
 
         .test-btn {
             padding: 15px 25px;
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
+            background: #FFF9E8;
+            border: 1px solid #CB433F;
             border-radius: 10px;
             cursor: pointer;
             font-size: 1.2em;
+            color: #2C2C2C;
             margin-bottom: 10px;
             display: block;
             width: 100%;
+            transition: all 0.3s;
+        }
+
+        .test-btn:hover {
+            background: #CB433F;
+            color: #FCF3D3;
         }
 
         /* QR輸入面板 */
@@ -272,10 +257,11 @@
             bottom: 20px;
             right: 20px;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.9);
+            background: #FFF9E8;
             padding: 20px;
             border-radius: 15px;
             display: none;
+            border: 1px solid #CB433F;
         }
 
         .qr-input-panel.active {
@@ -285,26 +271,31 @@
         .qr-input-panel input {
             padding: 15px;
             font-size: 1.2em;
-            border: 2px solid #f5576c;
+            border: 1px solid #CB433F;
             border-radius: 10px;
             width: 300px;
             margin-right: 10px;
+            background: #FFF9E8;
         }
 
         .qr-input-panel button {
             padding: 15px 30px;
             font-size: 1.2em;
-            background: #f5576c;
-            color: white;
+            background: #CB433F;
+            color: #FCF3D3;
             border: none;
             border-radius: 10px;
             cursor: pointer;
         }
 
+        .qr-input-panel button:hover {
+            background: #A5352F;
+        }
+
         /* 列印樣式 */
         @media print {
             body {
-                background: white;
+                background: #FCF3D3;
             }
 
             .idle-state,
@@ -316,7 +307,7 @@
             }
 
             .sticker-container {
-                box-shadow: none;
+                border: none;
                 padding: 40px;
                 page-break-inside: avoid;
             }

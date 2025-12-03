@@ -13,7 +13,7 @@
 
         body {
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            background: #000;
+            background: #FCF3D3;
             overflow: hidden;
             width: 100vw;
             height: 100vh;
@@ -46,15 +46,7 @@
             justify-content: center;
             align-items: center;
             z-index: 2;
-            background: linear-gradient(45deg, #dc2626, #ef4444);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            background: #FCF3D3;
         }
 
         .idle-state.hidden {
@@ -63,15 +55,9 @@
 
         .idle-title {
             font-size: 5em;
-            color: white;
+            color: #CB433F;
             font-weight: 300;
             letter-spacing: 8px;
-            animation: fadeInOut 3s ease-in-out infinite;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
         }
 
         /* 緊急任務狀態 */
@@ -101,86 +87,72 @@
             justify-content: center;
             align-items: center;
             padding: 80px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%);
+            background: #FCF3D3;
         }
 
         .mission-alert {
-            background: rgba(220, 38, 38, 0.95);
-            color: white;
+            background: #CB433F;
+            color: #FCF3D3;
             padding: 30px 60px;
             border-radius: 20px;
             font-size: 3em;
             font-weight: bold;
             text-align: center;
             margin-bottom: 40px;
-            animation: pulse 2s ease-in-out infinite;
-            box-shadow: 0 10px 50px rgba(220, 38, 38, 0.5);
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
         }
 
         .mission-content {
-            background: rgba(0, 0, 0, 0.85);
+            background: #FFF9E8;
             padding: 60px;
             border-radius: 30px;
             max-width: 1200px;
             text-align: center;
-            backdrop-filter: blur(10px);
+            border: 2px solid #CB433F;
         }
 
         .mission-title {
             font-size: 4em;
-            color: #fff;
+            color: #CB433F;
             margin-bottom: 30px;
             font-weight: bold;
         }
 
         .mission-description {
             font-size: 2.5em;
-            color: #fff;
+            color: #2C2C2C;
             line-height: 1.6;
             margin-bottom: 40px;
         }
 
         .patient-info {
             font-size: 2.8em;
-            color: #fca5a5;
+            color: #2C2C2C;
             margin-bottom: 30px;
         }
 
         .blood-type-needed {
             display: inline-block;
-            background: white;
-            color: #dc2626;
+            background: #CB433F;
+            color: #FCF3D3;
             padding: 30px 80px;
             border-radius: 50px;
             font-size: 5em;
             font-weight: bold;
             margin: 30px 0;
-            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3);
         }
 
         .scan-instruction {
             font-size: 2.5em;
-            color: #fbbf24;
+            color: #CB433F;
             margin-top: 40px;
-            animation: blink 1.5s ease-in-out infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
         }
 
         .countdown {
             position: absolute;
             top: 40px;
             right: 40px;
-            background: rgba(239, 68, 68, 0.9);
-            color: white;
+            background: #CB433F;
+            color: #FCF3D3;
             padding: 20px 40px;
             border-radius: 50%;
             font-size: 3em;
@@ -190,7 +162,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 5px 30px rgba(239, 68, 68, 0.5);
+            border: 3px solid #CB433F;
         }
 
         /* 結果狀態 */
@@ -221,36 +193,29 @@
         }
 
         .result-success {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+            background: #FCF3D3;
         }
 
         .result-failed {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95));
+            background: #FCF3D3;
         }
 
         .result-icon {
             font-size: 10em;
             margin-bottom: 40px;
-            animation: bounceIn 0.8s ease-out;
-        }
-
-        @keyframes bounceIn {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); opacity: 1; }
+            color: #CB433F;
         }
 
         .result-title {
             font-size: 5em;
-            color: white;
+            color: #CB433F;
             font-weight: bold;
             margin-bottom: 30px;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .result-message {
             font-size: 3em;
-            color: white;
+            color: #2C2C2C;
             text-align: center;
             line-height: 1.6;
             max-width: 1000px;
@@ -258,7 +223,7 @@
 
         .donor-name {
             font-size: 4em;
-            color: #fef3c7;
+            color: #CB433F;
             font-weight: bold;
             margin: 30px 0;
         }
@@ -276,19 +241,18 @@
 
         .test-btn {
             padding: 15px 25px;
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
+            background: #FFF9E8;
+            border: 1px solid #CB433F;
             border-radius: 10px;
             cursor: pointer;
             font-size: 1.2em;
+            color: #2C2C2C;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .test-btn:hover {
-            background: white;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: #CB433F;
+            color: #FCF3D3;
         }
 
         /* QR Code 輸入區 */
@@ -297,10 +261,11 @@
             bottom: 20px;
             right: 20px;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.9);
+            background: #FFF9E8;
             padding: 20px;
             border-radius: 15px;
             display: none;
+            border: 1px solid #CB433F;
         }
 
         .qr-input-panel.active {
@@ -310,24 +275,25 @@
         .qr-input-panel input {
             padding: 15px;
             font-size: 1.2em;
-            border: 2px solid #dc2626;
+            border: 1px solid #CB433F;
             border-radius: 10px;
             width: 300px;
             margin-right: 10px;
+            background: #FFF9E8;
         }
 
         .qr-input-panel button {
             padding: 15px 30px;
             font-size: 1.2em;
-            background: #dc2626;
-            color: white;
+            background: #CB433F;
+            color: #FCF3D3;
             border: none;
             border-radius: 10px;
             cursor: pointer;
         }
 
         .qr-input-panel button:hover {
-            background: #ef4444;
+            background: #A5352F;
         }
 
         /* 隱藏類 */

@@ -13,8 +13,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      color: #fff;
+      background: #FCF3D3;
+      color: #2C2C2C;
       min-height: 100vh;
     }
 
@@ -29,7 +29,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 20px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(203, 67, 63, 0.3);
       margin-bottom: 30px;
     }
 
@@ -39,6 +39,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      color: #CB433F;
     }
 
     h1::before {
@@ -46,14 +47,8 @@
       display: inline-block;
       width: 12px;
       height: 12px;
-      background: #e74c3c;
+      background: #CB433F;
       border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
     }
 
     .header-actions {
@@ -75,54 +70,54 @@
     }
 
     .btn-primary {
-      background: #3498db;
-      color: white;
+      background: #CB433F;
+      color: #FCF3D3;
     }
 
     .btn-primary:hover {
-      background: #2980b9;
-      transform: translateY(-1px);
+      background: #A5352F;
     }
 
     .btn-success {
-      background: #27ae60;
-      color: white;
+      background: #CB433F;
+      color: #FCF3D3;
     }
 
     .btn-success:hover {
-      background: #219a52;
+      background: #A5352F;
     }
 
     .btn-danger {
-      background: #e74c3c;
-      color: white;
+      background: #CB433F;
+      color: #FCF3D3;
     }
 
     .btn-danger:hover {
-      background: #c0392b;
+      background: #A5352F;
     }
 
     .btn-secondary {
-      background: rgba(255,255,255,0.1);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.2);
+      background: #FFF9E8;
+      color: #2C2C2C;
+      border: 1px solid rgba(203, 67, 63, 0.3);
     }
 
     .btn-secondary:hover {
-      background: rgba(255,255,255,0.2);
+      background: #FCF3D3;
     }
 
     .btn:disabled {
-      opacity: 0.5;
+      background: #E8DDB8;
+      color: #999;
       cursor: not-allowed;
-      transform: none;
     }
 
     .section {
-      background: rgba(255,255,255,0.05);
+      background: #FFF9E8;
       border-radius: 16px;
       padding: 24px;
       margin-bottom: 24px;
+      border: 1px solid rgba(203, 67, 63, 0.3);
     }
 
     .section-header {
@@ -135,13 +130,13 @@
     .section-title {
       font-size: 18px;
       font-weight: 600;
-      color: rgba(255,255,255,0.9);
+      color: #CB433F;
     }
 
     /* 後台狀態卡片 */
     .backend-card {
-      background: linear-gradient(135deg, rgba(231, 76, 60, 0.2) 0%, rgba(192, 57, 43, 0.2) 100%);
-      border: 1px solid rgba(231, 76, 60, 0.3);
+      background: #FFF9E8;
+      border: 1px solid #CB433F;
       border-radius: 12px;
       padding: 20px;
       display: flex;
@@ -150,8 +145,8 @@
     }
 
     .backend-card.healthy {
-      background: linear-gradient(135deg, rgba(39, 174, 96, 0.2) 0%, rgba(33, 154, 82, 0.2) 100%);
-      border-color: rgba(39, 174, 96, 0.3);
+      background: #FFF9E8;
+      border-color: #CB433F;
     }
 
     .backend-info {
@@ -168,29 +163,34 @@
       align-items: center;
       justify-content: center;
       font-size: 24px;
+      background: #FFF9E8;
+      border: 2px solid #CB433F;
     }
 
     .status-indicator.running {
-      background: rgba(39, 174, 96, 0.3);
+      background: #FFF9E8;
+      border-color: #27ae60;
     }
 
     .status-indicator.stopped {
-      background: rgba(231, 76, 60, 0.3);
+      background: #FFF9E8;
+      border-color: rgba(203, 67, 63, 0.3);
     }
 
     .status-indicator.starting {
-      background: rgba(241, 196, 15, 0.3);
-      animation: pulse 1s infinite;
+      background: #FFF9E8;
+      border-color: #f39c12;
     }
 
     .backend-details h3 {
       font-size: 16px;
       margin-bottom: 4px;
+      color: #2C2C2C;
     }
 
     .backend-details p {
       font-size: 13px;
-      color: rgba(255,255,255,0.6);
+      color: #2C2C2C;
     }
 
     .backend-actions {
@@ -206,16 +206,15 @@
     }
 
     .device-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: #FFF9E8;
+      border: 1px solid rgba(203, 67, 63, 0.3);
       border-radius: 12px;
       overflow: hidden;
       transition: all 0.2s;
     }
 
     .device-card:hover {
-      border-color: rgba(255,255,255,0.2);
-      transform: translateY(-2px);
+      border-color: #CB433F;
     }
 
     .device-card.disabled {
@@ -227,7 +226,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(203, 67, 63, 0.3);
     }
 
     .device-info {
@@ -240,29 +239,29 @@
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #e74c3c;
+      background: #CB433F;
     }
 
     .device-status.running {
       background: #27ae60;
-      box-shadow: 0 0 10px rgba(39, 174, 96, 0.5);
     }
 
     .device-status.starting {
-      background: #f1c40f;
-      animation: pulse 1s infinite;
+      background: #f39c12;
     }
 
     .device-name {
       font-weight: 500;
+      color: #2C2C2C;
     }
 
     .device-port {
       font-size: 12px;
-      color: rgba(255,255,255,0.5);
-      background: rgba(255,255,255,0.1);
+      color: #2C2C2C;
+      background: #FCF3D3;
       padding: 2px 8px;
       border-radius: 4px;
+      border: 1px solid rgba(203, 67, 63, 0.3);
     }
 
     .device-body {
@@ -271,7 +270,7 @@
 
     .device-description {
       font-size: 13px;
-      color: rgba(255,255,255,0.6);
+      color: #2C2C2C;
       margin-bottom: 16px;
     }
 
@@ -282,12 +281,13 @@
     }
 
     .screen-item {
-      background: rgba(255,255,255,0.05);
+      background: #FCF3D3;
       border-radius: 8px;
       padding: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border: 1px solid rgba(203, 67, 63, 0.3);
     }
 
     .screen-info {
@@ -297,11 +297,12 @@
     .screen-name {
       font-size: 14px;
       margin-bottom: 2px;
+      color: #2C2C2C;
     }
 
     .screen-description {
       font-size: 12px;
-      color: rgba(255,255,255,0.5);
+      color: #2C2C2C;
     }
 
     .screen-controls {
@@ -311,28 +312,28 @@
     }
 
     .display-select {
-      background: white;
-      border: 1px solid #333;
+      background: #FFF9E8;
+      border: 1px solid #CB433F;
       border-radius: 4px;
       padding: 8px 12px;
-      color: #000;
+      color: #2C2C2C;
       font-size: 13px;
       cursor: pointer;
       min-width: 120px;
     }
 
     .display-select:hover {
-      border-color: #000;
+      border-color: #A5352F;
     }
 
     .display-select:focus {
-      outline: 2px solid #000;
+      outline: 2px solid #CB433F;
       outline-offset: 2px;
     }
 
     .display-select option {
-      background: white;
-      color: #000;
+      background: #FFF9E8;
+      color: #2C2C2C;
       padding: 8px;
     }
 
@@ -344,7 +345,7 @@
 
     .device-footer {
       padding: 12px 16px;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      border-top: 1px solid rgba(203, 67, 63, 0.3);
       display: flex;
       justify-content: flex-end;
       gap: 8px;
@@ -352,30 +353,32 @@
 
     /* 日誌區域 */
     .log-container {
-      background: #0d1117;
+      background: #FFF9E8;
       border-radius: 8px;
       height: 200px;
       overflow-y: auto;
       font-family: 'Monaco', 'Menlo', monospace;
       font-size: 12px;
       padding: 12px;
+      border: 1px solid rgba(203, 67, 63, 0.3);
     }
 
     .log-entry {
       padding: 2px 0;
       word-break: break-all;
+      color: #2C2C2C;
     }
 
     .log-entry.stdout {
-      color: #7ee787;
+      color: #2C2C2C;
     }
 
     .log-entry.stderr {
-      color: #f85149;
+      color: #CB433F;
     }
 
     .log-source {
-      color: #58a6ff;
+      color: #CB433F;
       margin-right: 8px;
     }
 
@@ -387,8 +390,8 @@
     }
 
     .display-item {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: #FFF9E8;
+      border: 1px solid rgba(203, 67, 63, 0.3);
       border-radius: 8px;
       padding: 12px 16px;
       display: flex;
@@ -403,11 +406,12 @@
     .display-info h4 {
       font-size: 14px;
       margin-bottom: 2px;
+      color: #2C2C2C;
     }
 
     .display-info p {
       font-size: 12px;
-      color: rgba(255,255,255,0.5);
+      color: #2C2C2C;
     }
 
     /* 開啟的視窗區域 */
@@ -418,21 +422,22 @@
     }
 
     .window-tag {
-      background: rgba(52, 152, 219, 0.2);
-      border: 1px solid rgba(52, 152, 219, 0.3);
+      background: #FFF9E8;
+      border: 1px solid #CB433F;
       border-radius: 8px;
       padding: 8px 12px;
       display: flex;
       align-items: center;
       gap: 8px;
       font-size: 13px;
+      color: #2C2C2C;
     }
 
     .window-tag .close-btn {
-      background: rgba(231, 76, 60, 0.3);
+      background: #CB433F;
       border: none;
       border-radius: 4px;
-      color: white;
+      color: #FCF3D3;
       width: 20px;
       height: 20px;
       cursor: pointer;
@@ -443,11 +448,11 @@
     }
 
     .window-tag .close-btn:hover {
-      background: rgba(231, 76, 60, 0.5);
+      background: #A5352F;
     }
 
     .empty-message {
-      color: rgba(255,255,255,0.4);
+      color: #2C2C2C;
       font-style: italic;
     }
 
@@ -457,16 +462,16 @@
     }
 
     ::-webkit-scrollbar-track {
-      background: rgba(255,255,255,0.05);
+      background: #FCF3D3;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.2);
+      background: rgba(203, 67, 63, 0.3);
       border-radius: 4px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(255,255,255,0.3);
+      background: #CB433F;
     }
   </style>
 </head>
